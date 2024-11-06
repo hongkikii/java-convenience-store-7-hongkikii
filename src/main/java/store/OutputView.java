@@ -1,9 +1,36 @@
 package store;
 
+import java.util.List;
+
 public class OutputView {
     private static final String START_PROMPT = "안녕하세요. W편의점입니다.";
+    private static final String STOCK_PROMPT = "현재 보유하고 있는 상품입니다.";
 
     public void showStartPrompt() {
         System.out.println(START_PROMPT);
+    }
+
+    public void showStockPrompt() {
+        System.out.println(STOCK_PROMPT);
+        System.out.println();
+    }
+
+    public void show(Stock stock) {
+        List<Product> products = stock.get();
+        for (Product product : products) {
+            StringBuilder productInfo = new StringBuilder("-");
+            productInfo.append(product.getName() + " ");
+            productInfo.append(String.format("%,d", product.getPrice()) + "원 ");
+            if(product.getQuantity() > 0) {
+                productInfo.append(product.getQuantity() + "개 ");
+            }
+            if (product.getQuantity() <= 0) {
+                productInfo.append("재고 없음 ");
+            }
+            if (product.getPromotionType() != PromotionType.NONE) {
+                productInfo.append(product.getPromotionName() + " ");
+            }
+            System.out.println(productInfo);
+        }
     }
 }
