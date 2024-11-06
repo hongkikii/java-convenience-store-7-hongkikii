@@ -6,17 +6,21 @@ public enum PromotionType {
     NONE(0, 0),
     NOT_NOW(0, 0);
 
-    private final int buy;
-    private final int get;
+    private final int purchaseCount;
+    private final int freeCount;
 
-    PromotionType(int buy, int get) {
-        this.buy = buy;
-        this.get = get;
+    PromotionType(int purchaseCount, int freeCount) {
+        this.purchaseCount = purchaseCount;
+        this.freeCount = freeCount;
     }
 
-    public static PromotionType from(int buy, int get) {
+    public static PromotionType from(Promotion promotion) {
+        if(promotion.isNotNow()) {
+            return NOT_NOW;
+        }
         for (PromotionType promotionType : PromotionType.values()) {
-            if (promotionType.buy == buy && promotionType.get == get) {
+            if (promotionType.purchaseCount == promotion.getPurchaseCount()
+                    && promotionType.freeCount == promotion.getFreeCount()) {
                 return promotionType;
             }
         }
