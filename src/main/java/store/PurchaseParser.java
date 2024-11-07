@@ -27,7 +27,7 @@ public class PurchaseParser {
     private void validateProductQuantity(String input) {
         try {
             int quantity = Integer.parseInt(input);
-            if(quantity <= 0) {
+            if(quantity <= 0 || quantity > 1000) {
                 throw new IllegalArgumentException(INVALID_INPUT);
             }
         } catch (NumberFormatException e) {
