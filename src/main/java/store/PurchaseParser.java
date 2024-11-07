@@ -12,10 +12,22 @@ public class PurchaseParser {
         for(String productInfo : productInfos) {
             String[] info = productInfo.substring(1, productInfo.length() - 1).split("-");
             validateProductName(info[0]);
+//            validateProductQuantity(info[1]);
             result.put(info[0], Integer.parseInt(info[1]));
         }
         return result;
     }
+//
+//    private void validateProductQuantity(String input) {
+//        try {
+//            int quantity = Integer.parseInt(input);
+//            if(quantity < 0) {
+//                t
+//            }
+//        } catch (NumberFormatException e) {
+//            throw new IllegalArgumentException(INVALID_INPUT);
+//        }
+//    }
 
     private void validateProductName(String input) {
         if (!input.matches("^[a-zA-Z가-힣]+$")) {

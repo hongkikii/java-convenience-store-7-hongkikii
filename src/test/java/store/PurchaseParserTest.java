@@ -52,6 +52,17 @@ public class PurchaseParserTest {
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
 
+    @DisplayName("수량이 0일 경우 예외가 발생한다.")
+    @Test
+    void 수량이_영일_경우_예외가_발생한다() {
+        String input = "[콜라-0],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
     @DisplayName("수량이 음의 정수일 경우 예외가 발생한다.")
     @Test
     void 수량이_음의_정수일_경우_예외가_발생한다() {
