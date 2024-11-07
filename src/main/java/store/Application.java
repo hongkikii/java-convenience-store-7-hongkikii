@@ -11,11 +11,19 @@ public class Application {
         Stock stock = new Stock();
         outputView.show(stock);
 
-        outputView.showPurchasePrompt();
-        InputView inputView = new InputView();
-        String productInfo = inputView.readLine();
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Map<String, Integer> purchaseProducts = purchaseParser.execute(productInfo);
-        Purchase purchase = new Purchase(stock, purchaseProducts);
+        Purchase purchase = null;
+        while (purchase == null) {
+            try {
+                outputView.showPurchasePrompt();
+                InputView inputView = new InputView();
+                String productInfo = inputView.readLine();
+                PurchaseParser purchaseParser = new PurchaseParser();
+                Map<String, Integer> purchaseProducts = purchaseParser.execute(productInfo);
+                purchase = new Purchase(stock, purchaseProducts);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println();
+            }
+        }
     }
 }
