@@ -9,6 +9,6 @@ public class Application {
         Stock stock = new Stock();
         outputView.show(stock);
 
-
+        outputView.showPurchasePrompt();
     }
 }
