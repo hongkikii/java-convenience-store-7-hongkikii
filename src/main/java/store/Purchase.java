@@ -2,7 +2,7 @@ package store;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 public class Purchase {
     private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";
@@ -18,38 +18,35 @@ public class Purchase {
     }
 
     private void validate(Map<String, Integer> purchaseProducts) {
-        validateProductName(purchaseProducts);
+        validateProductName(purchaseProducts.keySet());
         validateProductQuantity(purchaseProducts);
     }
 
-    private void validateProductName(Map<String, Integer> purchaseProducts) {
+    private void validateProductName(Set<String> purchaseProductNames) {
         List<Product> products = stock.get();
-        for (Entry<String, Integer> entry : purchaseProducts.entrySet()) {
-            System.out.println(entry.getKey());
-            for(Product product : products) {
-                if(product.getName().equals(entry.getKey())) {
-                    return;
-                }
+        for (String purchaseProductName : purchaseProductNames) {
+            boolean productExists = products.stream()
+                    .anyMatch(product -> product.getName().equals(purchaseProductName));
+            if (!productExists) {
+                throw new IllegalArgumentException(PRODUCT_NAME_NOT_EXISTED);
             }
         }
-        throw new IllegalArgumentException(PRODUCT_NAME_NOT_EXISTED);
     }
 
     private void validateProductQuantity(Map<String, Integer> purchaseProducts) {
         List<Product> products = stock.get();
-
-        for (Map.Entry<String, Integer> entry : purchaseProducts.entrySet()) {
-            String productName = entry.getKey();
-            int requiredQuantity = entry.getValue();
-
-            int availableQuantity = products.stream()
-                    .filter(product -> product.getName().equals(productName))
-                    .mapToInt(Product::getQuantity)
-                    .sum();
-
+        purchaseProducts.forEach((productName, requiredQuantity) -> {
+            int availableQuantity = getAvailableQuantity(products, productName);
             if (availableQuantity < requiredQuantity) {
                 throw new IllegalArgumentException(PRODUCT_QUANTITY_EXCEEDED);
             }
-        }
+        });
+    }
+
+    private int getAvailableQuantity(List<Product> products, String productName) {
+        return products.stream()
+                .filter(product -> product.getName().equals(productName))
+                .mapToInt(Product::getQuantity)
+                .sum();
     }
 }
