@@ -74,6 +74,17 @@ public class PurchaseParserTest {
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
 
+    @DisplayName("수량이 1000개를 초과할 경우 예외가 발생한다.")
+    @Test
+    void 수량이_1000개를_초과할_경우_예외가_발생한다() {
+        String input = "[콜라-1001],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
 //    @DisplayName("입력 형식에 포함되지 않는 문자가 입력될 경우 예외가 발생한다.")
 //    @Test
 //    void 입력_형식에_포함되지_않는_문자가_입력될_경우_예외가_발생한다() {
