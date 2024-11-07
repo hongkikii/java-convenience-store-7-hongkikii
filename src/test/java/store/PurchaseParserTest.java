@@ -85,6 +85,28 @@ public class PurchaseParserTest {
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
 
+    @DisplayName("null이 입력될 경우 예외가 발생한다.")
+    @Test
+    void 널이_입력될_경우_예외가_발생한다() {
+        String input = null;
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+    @DisplayName("아무것도 입력되지 않을 경우 예외가 발생한다.")
+    @Test
+    void 아무것도_입력되지_않을_경우_예외가_발생한다() {
+        String input = " ";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
 //    @DisplayName("입력 형식에 포함되지 않는 문자가 입력될 경우 예외가 발생한다.")
 //    @Test
 //    void 입력_형식에_포함되지_않는_문자가_입력될_경우_예외가_발생한다() {
