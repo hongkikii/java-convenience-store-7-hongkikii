@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Purchase {
+    private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";
+
     private final Stock stock;
     private final Map<String, Integer> purchaseProducts;
 
@@ -22,9 +24,12 @@ public class Purchase {
         List<Product> products = stock.get();
         for (Entry<String, Integer> entry : purchaseProducts.entrySet()) {
             System.out.println(entry.getKey());
-            if (!products.contains(entry.getKey())) {
-                throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+            for(Product product : products) {
+                if(product.getName().equals(entry.getKey())) {
+                    return;
+                }
             }
         }
+        throw new IllegalArgumentException(PRODUCT_NAME_NOT_EXISTED);
     }
 }
