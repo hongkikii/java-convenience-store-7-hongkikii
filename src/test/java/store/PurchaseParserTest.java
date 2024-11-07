@@ -107,11 +107,6 @@ public class PurchaseParserTest {
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
 
-//    - [ ] 입력 형식에 맞지 않게 입력될 경우 예외가 발생한다.
-//            - [ ] 입력 형식에 포함되지 않는 문자가 입력될 경우 예외가 발생한다.
-//    - [ ] 상품명이 아무것도 없을 경우("") 예외가 발생한다.
-//            - [ ] 수량이 아무것도 없을 경우("") 예외가 발생한다.
-
     @DisplayName("입력 형식에 맞지 않게 입력될 경우 예외가 발생한다.")
     @Test
     void 입력_형식에_맞지_않게_입력될_경우_예외가_발생한다() {
@@ -123,12 +118,14 @@ public class PurchaseParserTest {
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
 
-//    @DisplayName("입력 형식에 포함되지 않는 문자가 입력될 경우 예외가 발생한다.")
-//    @Test
-//    void 입력_형식에_포함되지_않는_문자가_입력될_경우_예외가_발생한다() {
-//        String input = ""
-//
-//        PurchaseParser purchaseParser = new PurchaseParser();
-//        purchaseParser.execute()
-//    }
+    @DisplayName("입력 형식에 맞지 않게 입력될 경우 예외가 발생한다.")
+    @Test
+    void 상품명이_맞지_않게_입력될_경우_예외가_발생한다() {
+        String input = "[-10],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
 }
