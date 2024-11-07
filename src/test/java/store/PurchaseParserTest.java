@@ -1,0 +1,63 @@
+package store;
+
+import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+public class PurchaseParserTest {
+    @DisplayName("구매 상품과 수량을 입력받는다.")
+    @Test
+    void 구매_상품과_수량을_입력받는다() {
+        String input = "[콜라-10],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Map<String, Integer> purchaseInfo = purchaseParser.execute(input);
+
+        Assertions.assertThat(purchaseInfo)
+                .containsEntry("콜라", 10)
+                .containsEntry("오렌지주스", 5);
+    }
+
+    @DisplayName("상품명에 특수기호가 입력될 경우 예외가 발생한다.")
+    @Test
+    void 상품명에_알파벳과_특수기호가_입력될_경우_예외가_발생한다() {
+        String input = "[*라-10],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+    @DisplayName("상품명에 공백문자가 입력될 경우 예외가 발생한다.")
+    @Test
+    void 상품명에_알파벳과_공백문자가_입력될_경우_예외가_발생한다() {
+        String input = "[콜 라-10],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+    @DisplayName("상품명에 숫자가 입력될 경우 예외가 발생한다.")
+    @Test
+    void 상품명에_알파벳과_숫자가_입력될_경우_예외가_발생한다() {
+        String input = "[1-10],[오렌지주스-5]";
+
+        PurchaseParser purchaseParser = new PurchaseParser();
+        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+//    @DisplayName("입력 형식에 포함되지 않는 문자가 입력될 경우 예외가 발생한다.")
+//    @Test
+//    void 입력_형식에_포함되지_않는_문자가_입력될_경우_예외가_발생한다() {
+//        String input = ""
+//
+//        PurchaseParser purchaseParser = new PurchaseParser();
+//        purchaseParser.execute()
+//    }
+}
