@@ -3,7 +3,7 @@ package store;
 public class Product {
     private final String name;
     private final int price;
-    private final int quantity;
+    private int quantity;
     private final PromotionType promotionType;
     private final String promotionName;
 
@@ -33,5 +33,9 @@ public class Product {
 
     public String getPromotionName() {
         return this.promotionName;
+    }
+
+    public void deduct(int minusQuantity) {
+        this.quantity -= minusQuantity;
     }
 }

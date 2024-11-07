@@ -15,6 +15,24 @@ public class Purchase {
         this.stock = stock;
         validate(purchaseProducts);
         this.purchaseProducts = purchaseProducts;
+        execute();
+    }
+
+    private void execute() {
+        // 프로모션 상품일 경우 -> 프로모션 재고 먼저 차감
+        for(String productName : purchaseProducts.keySet()) {
+            List<Product> products = stock.get();
+            List<Product> purchaseCandidatesProduct = products.stream()
+                    .filter(product -> product.getName().equals(productName))
+                    .toList();
+            if (purchaseCandidatesProduct.size() == 2) {
+                Product promotionProduct = purchaseCandidatesProduct.stream()
+                        .filter(product -> !product.getPromotionType().equals(PromotionType.NONE))
+                        .findAny()
+                        .get();
+                promotionProduct.deduct(purchaseProducts.get(productName));
+            }
+        }
     }
 
     private void validate(Map<String, Integer> purchaseProducts) {
