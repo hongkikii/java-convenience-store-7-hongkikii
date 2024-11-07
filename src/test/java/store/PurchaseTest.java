@@ -1,5 +1,7 @@
 package store;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -10,6 +12,16 @@ public class PurchaseTest {
 
 //        - [ ] 입력한 상품이 없는 상품이 없을 경우 예외가 발생한다.
 //            - [ ] 입력한 상품의 재고가 부족한 경우 예외가 발생한다.
+
+    @DisplayName("입력한 상품이 존재할 경우 저장이 완료된다.")
+    @Test
+    void 입력한_상품이_존재할_경우_저장이_완료된다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("콜라", 5);
+
+        assertDoesNotThrow(() -> new Purchase(stock, purchaseInfo));
+    }
 
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
