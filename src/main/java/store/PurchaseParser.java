@@ -10,6 +10,7 @@ public class PurchaseParser {
         if(input == null || input.isBlank()) {
             throw new IllegalArgumentException(INVALID_INPUT);
         }
+        validate(input);
         Map<String, Integer> result = new HashMap<>();
         String[] productInfos = input.split(",");
         for(String productInfo : productInfos) {
@@ -19,6 +20,13 @@ public class PurchaseParser {
             result.put(info[0], Integer.parseInt(info[1]));
         }
         return result;
+    }
+
+    private void validate(String input) {
+        String inputPattern = "^\\[(?=.*-)[^\\]]*\\](,\\[(?=.*-)[^\\]]*\\])*$";
+        if (!input.matches(inputPattern)) {
+            throw new IllegalArgumentException(INVALID_INPUT);
+        }
     }
 
     private void validateProductName(String input) {
