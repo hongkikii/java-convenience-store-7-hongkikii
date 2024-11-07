@@ -1,22 +1,33 @@
 package store;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PurchaseTest {
-    @DisplayName("입력한 상품이 존재할 경우 저장이 완료된다.")
+    @DisplayName("입력한 상품이 프로모션 상품일 경우 프로모션 재고에서 우선 차감된다.")
     @Test
-    void 입력한_상품명과_재고가_존재할_경우_저장이_완료된다() {
+    void 입력한_상품이_프로모션_상품일_경우_프로모션_재고에서_우선_차감된다() {
         MockStock stock = new MockStock();
         Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 5);
+        purchaseInfo.put("콜라", 6);
 
-        assertDoesNotThrow(() -> new Purchase(stock, purchaseInfo));
+        Purchase purchase = new Purchase(stock, purchaseInfo);
+        List<Product> products = stock.get();
+        Integer quantityAfterPurchased = products.stream()
+                .filter(product -> product.getName().equals("콜라") &&
+                        product.getPromotionType().equals(PromotionType.TWO_PLUS_ONE))
+                .map(Product::getQuantity)
+                .findAny()
+                .get();
+
+        assertEquals(quantityAfterPurchased, 4);
     }
 
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
