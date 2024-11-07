@@ -16,6 +16,6 @@ public class Application {
         String productInfo = inputView.readLine();
         PurchaseParser purchaseParser = new PurchaseParser();
         Map<String, Integer> purchaseProducts = purchaseParser.execute(productInfo);
-        Purchase purchase = new Purchase(purchaseProducts);
+        Purchase purchase = new Purchase(stock, purchaseProducts);
     }
 }

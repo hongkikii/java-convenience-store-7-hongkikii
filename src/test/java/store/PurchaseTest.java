@@ -14,10 +14,11 @@ public class PurchaseTest {
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
     void 입력한_상품이_없을_경우_예외가_발생한다() {
+        MockStock stock = new MockStock();
         Map<String, Integer> purchaseInfo = new HashMap<>();
         purchaseInfo.put("없는 상품", 1);
 
-        Assertions.assertThatThrownBy(() -> new Purchase(purchaseInfo))
+        Assertions.assertThatThrownBy(() -> new Purchase(stock, purchaseInfo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
     }
