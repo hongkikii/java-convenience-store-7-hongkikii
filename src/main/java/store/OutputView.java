@@ -38,6 +38,5 @@ public class OutputView {
 
     public void showPurchasePrompt() {
         System.out.println(PURCHASE_PROMPT);
-        System.out.println();
     }
 }

@@ -15,7 +15,7 @@ public class PurchaseTest {
 
         Purchase purchase = new Purchase(purchaseInfo);
 
-        Map<String, Integer> purchaseProduct = purchase.getPurchaseProduct();
+        Map<String, Integer> purchaseProduct = purchase.getPurchaseProducts();
         Assertions.assertThat(purchaseProduct)
                 .containsEntry("콜라", 10)
                 .containsEntry("오렌지주스", 5);
