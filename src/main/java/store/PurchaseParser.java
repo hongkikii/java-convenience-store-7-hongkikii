@@ -7,6 +7,9 @@ public class PurchaseParser {
     private static final String INVALID_INPUT = "[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.";
 
     public Map<String, Integer> execute(String input) {
+        if(input == null || input.isBlank()) {
+            throw new IllegalArgumentException(INVALID_INPUT);
+        }
         Map<String, Integer> result = new HashMap<>();
         String[] productInfos = input.split(",");
         for(String productInfo : productInfos) {
