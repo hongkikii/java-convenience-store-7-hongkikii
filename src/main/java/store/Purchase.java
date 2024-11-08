@@ -36,61 +36,63 @@ public class Purchase {
 
     private void execute() {
         for(String productName : purchaseProducts.keySet()) {
-            List<Product> products = stock.get();
-            List<Product> purchaseCandidatesProduct = products.stream()
-                    .filter(product -> product.getName().equals(productName))
-                    .toList();
-            if (purchaseCandidatesProduct.size() == 2) {
-                Product promotionProduct = purchaseCandidatesProduct.stream()
-                        .filter(product -> !product.getPromotionType().equals(PromotionType.NONE))
-                        .findAny()
-                        .get();
-                Product generalProduct = purchaseCandidatesProduct.stream()
-                        .filter(product -> product.getPromotionType().equals(PromotionType.NONE))
-                        .findAny()
-                        .get();
-                int purchaseCount = purchaseProducts.get(productName);
-                int promotionUnit = 0;
-                int remainder = 0;
-                int payCount = 0;
-                int freeCount = 0;
-                PromotionType promotionType = promotionProduct.getPromotionType();
-                if (promotionType == PromotionType.TWO_PLUS_ONE) {
-                    promotionUnit = purchaseCount / 3;
-                    remainder = purchaseCount % 3;
-                    payCount = promotionUnit * 2 + remainder;
-                    freeCount = promotionUnit;
-                }
-                if (promotionType == PromotionType.ONE_PLUS_ONE) {
-                    promotionUnit = purchaseCount / 2;
-                    remainder = purchaseCount % 2;
-                    payCount = promotionUnit + remainder;
-                    freeCount = promotionUnit;
-                }
-                if (promotionProduct.getQuantity() < purchaseCount) {
-                    int unit = promotionType.getPurchaseCount() + promotionType.getFreeCount();
-                    int availablePromotionUnit = promotionProduct.getQuantity() / unit;
-                    int remove = purchaseCount - (availablePromotionUnit * unit);
-                    if(isPositiveToGeneral(productName, remove)) {
-                        generalProduct.deduct(remove);
-                    }
-                    else {
-                        payCount -= remove;
-                        freeCount = availablePromotionUnit;
-                    }
-                }
-                payProducts.put(productName, payCount);
-                freeProducts.put(productName, freeCount);
-                promotionProduct.deduct(purchaseProducts.get(productName));
+            if(stock.hasPromotion(productName)) {
+                applyPromotion(productName);
+                continue;
+            }
+//            applyGeneralPayment(productName);
+        }
+    }
 
-                if (remainder == promotionType.getPurchaseCount()
-                        && promotionProduct.getQuantity() >= freeCount) {
-                    if(isPositiveToAdd(productName, freeCount)) {
-                        addFreeProduct(promotionProduct);
-                    }
-                }
+    private void applyPromotion(String productName) {
+        Product promotionProduct = stock.getPromotionProduct(productName);
+        Product generalProduct = stock.getGeneralProduct(productName);
+        int purchaseCount = purchaseProducts.get(productName);
+
+        PromotionResult promotionResult = calculatePromotionResult(promotionProduct, purchaseCount);
+        if(isPromotionStockNotEnough(promotionProduct)) {
+            processShortage(promotionProduct, generalProduct, promotionResult);
+        }
+        record(promotionProduct, promotionResult);
+        processAdditionalFreeProduct(promotionProduct, promotionResult);
+    }
+
+    private void processAdditionalFreeProduct(Product promotionProduct, PromotionResult promotionResult) {
+        if (promotionResult.getRemainder() == promotionProduct.getPromotionType().getPurchaseCount()
+                && promotionProduct.getQuantity() >= promotionResult.getFreeCount()) {
+            if(isPositiveToAdd(promotionProduct.getName(), promotionResult.getFreeCount())) {
+                addFreeProduct(promotionProduct);
             }
         }
+    }
+
+    private void record(Product promotionProduct, PromotionResult promotionResult) {
+        String productName = promotionProduct.getName();
+        payProducts.put(productName, promotionResult.getPayCount());
+        freeProducts.put(productName, promotionResult.getFreeCount());
+        promotionProduct.deduct(purchaseProducts.get(productName));
+    }
+
+    private boolean isPromotionStockNotEnough(Product promotionProduct) {
+        return promotionProduct.getQuantity() < purchaseProducts.get(promotionProduct.getName());
+    }
+
+    private void processShortage(Product promotionProduct, Product generalProduct, PromotionResult promotionResult) {
+        PromotionType promotionType = promotionProduct.getPromotionType();
+        int unit = promotionType.getPurchaseCount() + promotionType.getFreeCount();
+        int availablePromotionUnit = promotionProduct.getQuantity() / unit;
+        int requiredGeneralCount = purchaseProducts.get(promotionProduct.getName()) - (availablePromotionUnit * unit);
+
+        if (isPositiveToGeneral(promotionProduct.getName(), requiredGeneralCount)) {
+            generalProduct.deduct(requiredGeneralCount);
+            return;
+        }
+        promotionResult.exceptShortage(requiredGeneralCount, availablePromotionUnit);
+    }
+
+    private PromotionResult calculatePromotionResult(Product promotionProduct, int purchaseCount) {
+        PromotionType promotionType = promotionProduct.getPromotionType();
+        return promotionType.getResult(purchaseCount);
     }
 
     private boolean isPositiveToGeneral(String productName, int generalCount) {

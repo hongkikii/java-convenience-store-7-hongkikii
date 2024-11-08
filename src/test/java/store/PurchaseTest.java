@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,15 +27,9 @@ public class PurchaseTest {
         purchaseInfo.put("콜라", 6);
 
         Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
-        List<Product> products = stock.get();
-        Integer quantityAfterPurchased = products.stream()
-                .filter(product -> product.getName().equals("콜라") &&
-                        product.getPromotionType().equals(PromotionType.TWO_PLUS_ONE))
-                .map(Product::getQuantity)
-                .findAny()
-                .get();
+        Product promotionProduct = stock.getPromotionProduct("콜라");
 
-        assertEquals(quantityAfterPurchased, 4);
+        assertEquals(promotionProduct.getQuantity(), 4);
     }
 
     @DisplayName("고객에게 상품이 증정될 때마다, 해당 수량 만큼 프로모션 재고에서 차감한다.")
