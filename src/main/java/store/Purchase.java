@@ -35,7 +35,6 @@ public class Purchase {
     }
 
     private void execute() {
-        // 프로모션 상품일 경우 -> 프로모션 재고 먼저 차감
         for(String productName : purchaseProducts.keySet()) {
             List<Product> products = stock.get();
             List<Product> purchaseCandidatesProduct = products.stream()
@@ -69,8 +68,8 @@ public class Purchase {
                 promotionProduct.deduct(purchaseProducts.get(productName));
 
                 if (remainder == promotionType.getPurchaseCount()
-                        && promotionProduct.getQuantity() >= promotionType.getFreeCount()) {
-                    if(isPositiveToAdd(promotionProduct)) {
+                        && promotionProduct.getQuantity() >= freeCount) {
+                    if(isPositiveToAdd(productName, freeCount)) {
                         addFreeProduct(promotionProduct);
                     }
                 }
@@ -78,31 +77,17 @@ public class Purchase {
         }
     }
 
-    private boolean isPositiveToAdd(Product promotionProduct) {
-        String productName = promotionProduct.getName();
-        PromotionType promotionType = promotionProduct.getPromotionType();
-        int freeCount = promotionType.getFreeCount();
-        String answer = null;
+    private boolean isPositiveToAdd(String productionName, int freeCount) {
+        String answer;
         do {
-            System.out.println(
-                    "현재 " + productName + "은(는) " + freeCount + "개를 무료로 더 받을 수 있습니다. "
-                            + "추가하시겠습니까? (Y/N)");
-            answer = inputView.readLine();
+            answer = inputView.readPromotionAnswer(productionName, freeCount);
             try {
-                if (answer == null || answer.isEmpty()) {
-                    throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
-                }
-                if (answer.equalsIgnoreCase("Y")) {
-                    return true;
-                }
-                if (answer.equalsIgnoreCase("N")) {
-                    return false;
-                }
-                throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+                return AnswerValidator.validate(answer);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-        } while (true);
+        } while (answer == null);
+        return false;
     }
 
     private void addFreeProduct(Product promotionProduct) {

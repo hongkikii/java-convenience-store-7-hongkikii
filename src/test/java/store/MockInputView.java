@@ -5,7 +5,7 @@ public class MockInputView extends InputView {
     public String answer = "Y";
 
     @Override
-    public String readLine() {
+    public String readPromotionAnswer(String productName, int freeCount) {
         return answer;
     }
 }
