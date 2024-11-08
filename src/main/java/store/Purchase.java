@@ -40,8 +40,13 @@ public class Purchase {
                 applyPromotion(productName);
                 continue;
             }
-//            applyGeneralPayment(productName);
+            applyGeneralPayment(productName);
         }
+    }
+
+    private void applyGeneralPayment(String productName) {
+        Product generalProduct = stock.getGeneralProduct(productName);
+        generalProduct.deduct(purchaseProducts.get(productName));
     }
 
     private void applyPromotion(String productName) {
