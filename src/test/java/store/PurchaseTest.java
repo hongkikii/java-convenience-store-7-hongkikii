@@ -39,13 +39,13 @@ public class PurchaseTest {
         purchaseInfo.put("콜라", 6);
 
         Purchase purchase = new Purchase(stock, purchaseInfo);
-        Map<String, Integer> purchaseProduct = purchase.getPayProduct();
-        Map<String, Integer> freeProduct = purchase.getFreeProduct();
+        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
-        assertTrue(purchaseProduct.containsKey("콜라"));
-        assertEquals(purchaseProduct.get("콜라"), 4);
+        assertTrue(payProduct.containsKey("콜라"));
+        assertEquals(payProduct.get("콜라"), 4);
         assertTrue(freeProduct.containsKey("콜라"));
-        assertEquals(purchaseProduct.get("콜라"), 2);
+        assertEquals(freeProduct.get("콜라"), 2);
     }
 
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")

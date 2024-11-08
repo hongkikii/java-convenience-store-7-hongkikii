@@ -1,5 +1,6 @@
 package store;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,12 +11,24 @@ public class Purchase {
 
     private final Stock stock;
     private final Map<String, Integer> purchaseProducts;
+    private final Map<String, Integer> payProducts;
+    private final Map<String, Integer> freeProducts;
 
     public Purchase(Stock stock, Map<String, Integer> purchaseProducts) {
         this.stock = stock;
         validate(purchaseProducts);
         this.purchaseProducts = purchaseProducts;
+        this.payProducts = new HashMap<>();
+        this.freeProducts = new HashMap<>();
         execute();
+    }
+
+    public Map<String, Integer> getPayProducts() {
+        return payProducts;
+    }
+
+    public Map<String, Integer> getFreeProducts() {
+        return freeProducts;
     }
 
     private void execute() {
@@ -30,6 +43,23 @@ public class Purchase {
                         .filter(product -> !product.getPromotionType().equals(PromotionType.NONE))
                         .findAny()
                         .get();
+                int purchaseCount = purchaseProducts.get(productName);
+                int payCount = 0;
+                int freeCount = 0;
+                if (promotionProduct.getPromotionType() == PromotionType.TWO_PLUS_ONE) {
+                    int promotionUnit = purchaseCount / 3;
+                    int remainder = purchaseCount % 3;
+                    payCount = promotionUnit * 2 + remainder;
+                    freeCount = promotionUnit;
+                }
+                if (promotionProduct.getPromotionType() == PromotionType.ONE_PLUS_ONE) {
+                    int groups = purchaseCount / 2;
+                    int remainder = purchaseCount % 2;
+                    payCount = groups + remainder;
+                    freeCount = groups;
+                }
+                payProducts.put(productName, payCount);
+                freeProducts.put(productName, freeCount);
                 promotionProduct.deduct(purchaseProducts.get(productName));
             }
         }
