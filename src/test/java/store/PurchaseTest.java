@@ -94,6 +94,47 @@ public class PurchaseTest {
         assertEquals(freeProduct.get("콜라"), 1);
     }
 
+    @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의할 시 일반 재고에서 차감한다.")
+    @Test
+    void 프로모션_재고가_부족한_경우_일반_재고에서_차감한다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("콜라", 11);
+
+        MockInputView negativeInputView = new MockInputView();
+        negativeInputView.answer = "Y";
+        Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
+
+        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+
+        assertTrue(payProduct.containsKey("콜라"));
+        assertEquals(payProduct.get("콜라"), 8);
+        assertTrue(freeProduct.containsKey("콜라"));
+        assertEquals(freeProduct.get("콜라"), 3);
+    }
+
+    @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의하지 않을 시 프로모션 수량만 차감한다.")
+    @Test
+    void 프로모션_재고가_부족한_경우_사용자가_동의하지_않을시_프로모션_수량만_차감한다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("콜라", 11);
+
+        MockInputView negativeInputView = new MockInputView();
+        negativeInputView.answer = "N";
+        Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
+
+        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+
+        assertTrue(payProduct.containsKey("콜라"));
+        assertEquals(payProduct.get("콜라"), 6);
+        assertTrue(freeProduct.containsKey("콜라"));
+        assertEquals(freeProduct.get("콜라"), 3);
+    }
+
+
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
     void 입력한_상품이_없을_경우_예외가_발생한다() {
