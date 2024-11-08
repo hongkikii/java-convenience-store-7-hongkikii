@@ -48,6 +48,25 @@ public class PurchaseTest {
         assertEquals(freeProduct.get("콜라"), 2);
     }
 
+    @DisplayName("프로모션 적용 가능 상품을 고객이 해당 수량보다 적게 가져온 경우 추가로 증정할 수 있다.")
+    @Test
+    void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정할_수_있다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("콜라", 5);
+
+        Purchase purchase = new Purchase(stock, purchaseInfo);
+        purchase.addPromotionProduct("콜라");
+
+        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+
+        assertTrue(payProduct.containsKey("콜라"));
+        assertEquals(payProduct.get("콜라"), 4);
+        assertTrue(freeProduct.containsKey("콜라"));
+        assertEquals(freeProduct.get("콜라"), 2);
+    }
+
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
     void 입력한_상품이_없을_경우_예외가_발생한다() {
