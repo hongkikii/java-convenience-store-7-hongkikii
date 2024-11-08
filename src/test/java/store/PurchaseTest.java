@@ -2,6 +2,7 @@ package store;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,23 @@ public class PurchaseTest {
                 .get();
 
         assertEquals(quantityAfterPurchased, 4);
+    }
+
+    @DisplayName("고객에게 상품이 증정될 때마다, 해당 수량 만큼 프로모션 재고에서 차감한다.")
+    @Test
+    void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("콜라", 6);
+
+        Purchase purchase = new Purchase(stock, purchaseInfo);
+        Map<String, Integer> purchaseProduct = purchase.getPayProduct();
+        Map<String, Integer> freeProduct = purchase.getFreeProduct();
+
+        assertTrue(purchaseProduct.containsKey("콜라"));
+        assertEquals(purchaseProduct.get("콜라"), 4);
+        assertTrue(freeProduct.containsKey("콜라"));
+        assertEquals(purchaseProduct.get("콜라"), 2);
     }
 
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
