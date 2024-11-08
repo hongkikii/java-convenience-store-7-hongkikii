@@ -32,6 +32,19 @@ public class PurchaseTest {
         assertEquals(promotionProduct.getQuantity(), 4);
     }
 
+    @DisplayName("입력한 상품이 프로모션 미적용 상품일 경우 일반 재고에서 차감한다.")
+    @Test
+    void 입력한_상품이_프로모션_미적용_상품일_경우_일반_재고에서_차감한다() {
+        MockStock stock = new MockStock();
+        Map<String, Integer> purchaseInfo = new HashMap<>();
+        purchaseInfo.put("오렌지주스", 6);
+
+        Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
+        Product generalProduct = stock.getGeneralProduct("오렌지주스");
+
+        assertEquals(generalProduct.getQuantity(), 4);
+    }
+
     @DisplayName("고객에게 상품이 증정될 때마다, 해당 수량 만큼 프로모션 재고에서 차감한다.")
     @Test
     void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
