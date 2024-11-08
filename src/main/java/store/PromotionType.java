@@ -26,4 +26,12 @@ public enum PromotionType {
         }
         return NONE;
     }
+
+    public int getPurchaseCount() {
+        return this.purchaseCount;
+    }
+
+    public int getFreeCount() {
+        return this.freeCount;
+    }
 }

@@ -19,7 +19,7 @@ public class Application {
                 String productInfo = inputView.readLine();
                 PurchaseParser purchaseParser = new PurchaseParser();
                 Map<String, Integer> purchaseProducts = purchaseParser.execute(productInfo);
-                purchase = new Purchase(stock, purchaseProducts);
+                purchase = new Purchase(inputView, stock, purchaseProducts);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 System.out.println();
