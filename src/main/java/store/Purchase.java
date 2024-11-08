@@ -45,6 +45,10 @@ public class Purchase {
                         .filter(product -> !product.getPromotionType().equals(PromotionType.NONE))
                         .findAny()
                         .get();
+                Product generalProduct = purchaseCandidatesProduct.stream()
+                        .filter(product -> product.getPromotionType().equals(PromotionType.NONE))
+                        .findAny()
+                        .get();
                 int purchaseCount = purchaseProducts.get(productName);
                 int promotionUnit = 0;
                 int remainder = 0;
@@ -63,6 +67,18 @@ public class Purchase {
                     payCount = promotionUnit + remainder;
                     freeCount = promotionUnit;
                 }
+                if (promotionProduct.getQuantity() < purchaseCount) {
+                    int unit = promotionType.getPurchaseCount() + promotionType.getFreeCount();
+                    int availablePromotionUnit = promotionProduct.getQuantity() / unit;
+                    int remove = purchaseCount - (availablePromotionUnit * unit);
+                    if(isPositiveToGeneral(productName, remove)) {
+                        generalProduct.deduct(remove);
+                    }
+                    else {
+                        payCount -= remove;
+                        freeCount = availablePromotionUnit;
+                    }
+                }
                 payProducts.put(productName, payCount);
                 freeProducts.put(productName, freeCount);
                 promotionProduct.deduct(purchaseProducts.get(productName));
@@ -75,6 +91,19 @@ public class Purchase {
                 }
             }
         }
+    }
+
+    private boolean isPositiveToGeneral(String productName, int generalCount) {
+        String answer;
+        do {
+            answer = inputView.readGeneralAnswer(productName, generalCount);
+            try {
+                return AnswerValidator.validate(answer);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (answer == null);
+        return false;
     }
 
     private boolean isPositiveToAdd(String productionName, int freeCount) {
