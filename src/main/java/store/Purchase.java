@@ -169,29 +169,27 @@ public class Purchase {
     }
 
     private boolean isPositiveToGeneral(String productName, int generalCount) {
-        String answer;
         do {
-            answer = inputView.readGeneralAnswer(productName, generalCount);
             try {
+                String answer = inputView.readGeneralAnswer(productName, generalCount);
                 return AnswerValidator.validate(answer);
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-        } while (answer == null);
-        return false;
+        } while (true);
     }
 
     private boolean isPositiveToAdd(String productionName, int freeCount) {
-        String answer;
         do {
-            answer = inputView.readPromotionAnswer(productionName, freeCount);
             try {
+                String answer = inputView.readPromotionAnswer(productionName, freeCount);
                 return AnswerValidator.validate(answer);
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
-        } while (answer == null);
-        return false;
+        } while (true);
     }
 
     private void addFreeProduct(Product promotionProduct) {
