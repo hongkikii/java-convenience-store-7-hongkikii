@@ -1,10 +1,13 @@
 package store;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import store.Receipt.PriceInfo;
+import store.Receipt.ProductInfo;
 
 public class Purchase {
     private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";
@@ -47,6 +50,44 @@ public class Purchase {
 
     public Map<String, Integer> getFreeProducts() {
         return Collections.unmodifiableMap(freeProducts);
+    }
+
+    public Receipt getInfo(Membership membership) {
+        int generalPrice = generalProducts.keySet().stream()
+                .mapToInt(productionName ->
+                        stock.getGeneralProduct(productionName).getPrice() * generalProducts.get(productionName))
+                .sum();
+
+        int promotionPrice = promotionProducts.keySet().stream()
+                .mapToInt(productionName ->
+                        stock.getPromotionProduct(productionName).getPrice() * promotionProducts.get(productionName))
+                .sum();
+
+        int freePrice = freeProducts.keySet().stream()
+                .mapToInt(productName ->
+                        stock.getPromotionProduct(productName).getPrice() * freeProducts.get(productName))
+                .sum();
+
+        int totalPrice = generalPrice + promotionPrice + freePrice;
+        int membershipPrice = membership.getPrice();
+        int paymentPrice = totalPrice - membershipPrice - freePrice;
+
+        PriceInfo priceInfo = new PriceInfo(totalPrice, freePrice, membershipPrice, paymentPrice);
+
+        List<ProductInfo> totalProductInfo = new ArrayList<>();
+        for (String productName : purchaseProducts.keySet()) {
+            Product product = stock.getGeneralProduct(productName);
+            int count = purchaseProducts.get(productName);
+            totalProductInfo.add(new ProductInfo(productName, count, product.getPrice() * count));
+        }
+
+        List<ProductInfo> freeProductInfo = new ArrayList<>();
+        for (String productName : freeProducts.keySet()) {
+            Product product = stock.getPromotionProduct(productName);
+            freeProductInfo.add(new ProductInfo(productName, freeProducts.get(productName), product.getPrice()));
+        }
+
+        return new Receipt(totalProductInfo, freeProductInfo, priceInfo);
     }
 
     private void execute() {
@@ -119,6 +160,7 @@ public class Purchase {
             generalProducts.put(productName, requiredGeneralCount);
         }
         promotionResult.exceptShortage(requiredGeneralCount, availablePromotionUnit);
+        purchaseProducts.put(productName, purchaseProducts.get(productName) - requiredGeneralCount);
     }
 
     private PromotionResult calculatePromotionResult(Product promotionProduct, int purchaseCount) {
@@ -157,6 +199,7 @@ public class Purchase {
         String productName = promotionProduct.getName();
         promotionProduct.deduct(freeCount);
         freeProducts.put(productName, freeProducts.get(productName) + freeCount);
+        purchaseProducts.put(productName, purchaseProducts.get(productName) + freeCount);
     }
 
     private void validate(Map<String, Integer> purchaseProducts) {

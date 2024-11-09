@@ -38,5 +38,6 @@ public class Application {
                 System.out.println();
             }
         }
+        outputView.show(purchase.getInfo(membership));
     }
 }

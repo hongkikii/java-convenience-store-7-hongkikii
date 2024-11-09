@@ -23,7 +23,7 @@ public class OutputView {
             StringBuilder productInfo = new StringBuilder("-");
             productInfo.append(product.getName() + " ");
             productInfo.append(String.format("%,d", product.getPrice()) + "원 ");
-            if(product.getQuantity() > 0) {
+            if (product.getQuantity() > 0) {
                 productInfo.append(product.getQuantity() + "개 ");
             }
             if (product.getQuantity() <= 0) {
@@ -43,5 +43,9 @@ public class OutputView {
 
     public void showMembershipPrompt() {
         System.out.println(MEMBERSHIP_PROMPT);
+    }
+
+    public void show(Receipt receipt) {
+        receipt.printReceipt();
     }
 }
