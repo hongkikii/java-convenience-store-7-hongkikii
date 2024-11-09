@@ -13,7 +13,8 @@ public class Purchase {
     private final InputView inputView;
     private final Stock stock;
     private final Map<String, Integer> purchaseProducts;
-    private final Map<String, Integer> payProducts;
+    private final Map<String, Integer> generalProducts;
+    private final Map<String, Integer> promotionProducts;
     private final Map<String, Integer> freeProducts;
 
     public Purchase(InputView inputView, Stock stock, Map<String, Integer> purchaseProducts) {
@@ -21,13 +22,27 @@ public class Purchase {
         validate(purchaseProducts);
         this.purchaseProducts = purchaseProducts;
         this.inputView = inputView;
-        this.payProducts = new HashMap<>();
+        this.generalProducts = new HashMap<>();
+        this.promotionProducts = new HashMap<>();
         this.freeProducts = new HashMap<>();
         execute();
     }
 
-    public Map<String, Integer> getPayProducts() {
-        return Collections.unmodifiableMap(payProducts);
+    public int getGeneralPrice() {
+        int generalPrice = 0;
+        for(String productName: generalProducts.keySet()) {
+            Product generalProduct = stock.getGeneralProduct(productName);
+            generalPrice += generalProduct.getPrice() * generalProducts.get(productName);
+        }
+        return generalPrice;
+    }
+
+    public Map<String, Integer> getGeneralProducts() {
+        return Collections.unmodifiableMap(generalProducts);
+    }
+
+    public Map<String, Integer> getPromotionProducts() {
+        return Collections.unmodifiableMap(promotionProducts);
     }
 
     public Map<String, Integer> getFreeProducts() {
@@ -45,8 +60,10 @@ public class Purchase {
     }
 
     private void applyGeneralPayment(String productName) {
+        int purchaseCount = purchaseProducts.get(productName);
         Product generalProduct = stock.getGeneralProduct(productName);
-        generalProduct.deduct(purchaseProducts.get(productName));
+        generalProduct.deduct(purchaseCount);
+        generalProducts.put(productName, purchaseCount);
     }
 
     private void applyPromotion(String productName) {
@@ -73,7 +90,7 @@ public class Purchase {
 
     private void record(Product promotionProduct, PromotionResult promotionResult) {
         String productName = promotionProduct.getName();
-        payProducts.put(productName, promotionResult.getPayCount());
+        promotionProducts.put(productName, promotionResult.getPayCount());
         freeProducts.put(productName, promotionResult.getFreeCount());
         promotionProduct.deduct(purchaseProducts.get(productName));
     }
@@ -88,9 +105,17 @@ public class Purchase {
         int availablePromotionUnit = promotionProduct.getQuantity() / unit;
         int requiredGeneralCount = purchaseProducts.get(promotionProduct.getName()) - (availablePromotionUnit * unit);
 
-        if (isPositiveToGeneral(promotionProduct.getName(), requiredGeneralCount)) {
-            generalProduct.deduct(requiredGeneralCount);
-            return;
+        String productName = promotionProduct.getName();
+        if (isPositiveToGeneral(productName, requiredGeneralCount)) {
+            int promotionRemain = promotionProduct.getQuantity() - requiredGeneralCount;
+            if (promotionRemain > 0) {
+                promotionProduct.deduct(promotionRemain);
+                generalProduct.deduct(requiredGeneralCount - promotionRemain);
+            }
+            else {
+                generalProduct.deduct(requiredGeneralCount);
+            }
+            generalProducts.put(productName, requiredGeneralCount);
         }
         promotionResult.exceptShortage(requiredGeneralCount, availablePromotionUnit);
     }

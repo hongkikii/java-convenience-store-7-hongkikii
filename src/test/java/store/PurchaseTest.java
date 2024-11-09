@@ -53,7 +53,7 @@ public class PurchaseTest {
         purchaseInfo.put("콜라", 6);
 
         Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
-        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -71,7 +71,7 @@ public class PurchaseTest {
 
         Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -91,7 +91,7 @@ public class PurchaseTest {
         negativeInputView.answer = "N";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -111,13 +111,16 @@ public class PurchaseTest {
         negativeInputView.answer = "Y";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> promotionProduct = purchase.getPromotionProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> generalProduct = purchase.getGeneralProducts();
 
-        assertTrue(payProduct.containsKey("콜라"));
-        assertEquals(payProduct.get("콜라"), 8);
+        assertTrue(promotionProduct.containsKey("콜라"));
+        assertEquals(promotionProduct.get("콜라"), 6);
         assertTrue(freeProduct.containsKey("콜라"));
         assertEquals(freeProduct.get("콜라"), 3);
+        assertTrue(generalProduct.containsKey("콜라"));
+        assertEquals(generalProduct.get("콜라"), 2);
     }
 
     @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의하지 않을 시 프로모션 수량만 차감한다.")
@@ -131,7 +134,7 @@ public class PurchaseTest {
         negativeInputView.answer = "N";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPayProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
