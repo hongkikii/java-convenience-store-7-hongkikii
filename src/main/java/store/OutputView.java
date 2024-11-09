@@ -20,7 +20,7 @@ public class OutputView {
     public void show(Stock stock) {
         List<Product> products = stock.get();
         for (Product product : products) {
-            StringBuilder productInfo = new StringBuilder("-");
+            StringBuilder productInfo = new StringBuilder("- ");
             productInfo.append(product.getName() + " ");
             productInfo.append(String.format("%,d", product.getPrice()) + "원 ");
             if (product.getQuantity() > 0) {
