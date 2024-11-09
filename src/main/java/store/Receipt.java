@@ -26,30 +26,30 @@ public class Receipt {
     }
 
     public void printReceipt() {
-        String title = "===========W 편의점=============";
-        String divider = "==============================";
-        System.out.println(title);
+        String title = "==============W 편의점================";
+        String divider = "====================================";
 
-        System.out.printf("%-8s %8s %10s\n", "상품명", "수량", "금액");
+        System.out.println(title);
+        System.out.printf("%-10s %9s %8s\n", "상품명", "수량", "금액");
 
         int totalQuantity = 0;
         for (ProductInfo product : totalProductInfo) {
             totalQuantity += product.getCount();
-            System.out.printf("%-8s %8d %,10d\n", product.getProductName(), product.getCount(), product.getPrice());
+            System.out.printf("%-10s %8d %,13d\n", product.getProductName(), product.getCount(), product.getPrice());
         }
 
-        System.out.println("===========증 정=============");
+        System.out.println("=============증     정===============");
 
         for (ProductInfo product : freeProductInfo) {
-            System.out.printf("%-8s %8d\n", product.getProductName(), product.getCount());
+            System.out.printf("%-10s %8d\n", product.getProductName(), product.getCount());
         }
 
         System.out.println(divider);
 
-        System.out.printf("%-8s %8d %,10d\n", "총구매액", totalQuantity, priceInfo.getTotalPrice());
-        System.out.printf("%-8s %18s\n", "행사할인", OutputFormatter.formatWithNegativeSign(priceInfo.getPromotionPrice()));
-        System.out.printf("%-8s %18s\n", "멤버십할인", OutputFormatter.formatWithNegativeSign(priceInfo.getMembershipPrice()));
-        System.out.printf("%-8s %,18d\n", "내실돈", priceInfo.getPaymentPrice());
+        System.out.printf("%-10s %8d %,13d\n", "총구매액", totalQuantity, priceInfo.getTotalPrice());
+        System.out.printf("%-10s %21s\n", "행사할인", OutputFormatter.formatWithNegativeSign(priceInfo.getPromotionPrice()));
+        System.out.printf("%-10s %21s\n", "멤버십할인", OutputFormatter.formatWithNegativeSign(priceInfo.getMembershipPrice()));
+        System.out.printf("%-10s %,21d\n", "내실돈", priceInfo.getPaymentPrice());
     }
 
     static class ProductInfo {
