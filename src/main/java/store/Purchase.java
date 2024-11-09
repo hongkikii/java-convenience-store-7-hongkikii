@@ -58,6 +58,7 @@ public class Purchase {
         for (String productName : purchaseProducts.keySet()) {
             Product product = stock.getGeneralProduct(productName);
             int count = purchaseProducts.get(productName);
+            if(count <= 0) continue;
             int price = product.getPrice() * count;
             totalProductInfo.add(new ProductInfo(productName, count, price));
             purchasePrice += price;
@@ -68,6 +69,7 @@ public class Purchase {
         for (String productName : freeProducts.keySet()) {
             Product product = stock.getPromotionProduct(productName);
             int count = freeProducts.get(productName);
+            if(count <= 0) continue;
             int price = product.getPrice();
             freeProductInfo.add(new ProductInfo(productName, count, price));
             freePrice += count * price;
