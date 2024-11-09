@@ -1,5 +1,7 @@
 package store;
 
+import static store.Constants.INVALID_INPUT_ERROR;
+
 public enum PromotionType {
     ONE_PLUS_ONE(1, 1) {
         @Override
@@ -44,7 +46,7 @@ public enum PromotionType {
                 return promotionType;
             }
         }
-        return NONE;
+        throw new IllegalArgumentException(INVALID_INPUT_ERROR);
     }
 
     public int getPurchaseCount() {
