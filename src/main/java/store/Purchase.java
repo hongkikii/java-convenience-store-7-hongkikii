@@ -82,7 +82,8 @@ public class Purchase {
     private void processAdditionalFreeProduct(Product promotionProduct, PromotionResult promotionResult) {
         if (promotionResult.getRemainder() == promotionProduct.getPromotionType().getPurchaseCount()
                 && promotionProduct.getQuantity() >= promotionResult.getFreeCount()) {
-            if(isPositiveToAdd(promotionProduct.getName(), promotionResult.getFreeCount())) {
+            int freeCount = promotionProduct.getPromotionType().getFreeCount();
+            if(isPositiveToAdd(promotionProduct.getName(), freeCount)) {
                 addFreeProduct(promotionProduct);
             }
         }
