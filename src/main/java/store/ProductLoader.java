@@ -7,9 +7,9 @@ import static store.Constants.WORD_DELIMITER;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProductLoader {
@@ -29,11 +29,34 @@ public class ProductLoader {
 
     public List<Product> execute() {
         try (Stream<String> lines = Files.lines(Paths.get(PRODUCTS_FILE_PATH))) {
-            return lines.skip(EXCEPT_LINE_COUNT)
+            List<Product> products = new ArrayList<>();
+            List<String[]> productLines = lines.skip(EXCEPT_LINE_COUNT)
                     .map(this::parseLine)
                     .filter(this::isCurrentProduct)
-                    .map(this::createProduct)
-                    .collect(Collectors.toList());
+                    .toList();
+
+            for (int i = 0; i < productLines.size(); i++) {
+                String[] currentLine = productLines.get(i);
+                Product product = createProduct(currentLine);
+                products.add(product);
+
+                if (product.getPromotionType() != PromotionType.NONE) {
+                    boolean isLastLine = i == productLines.size() - 1;
+                    boolean hasDifferentNextName = !isLastLine &&
+                            !productLines.get(i + 1)[PRODUCT_NAME_INDEX].equals(currentLine[PRODUCT_NAME_INDEX]);
+
+                    if (isLastLine || hasDifferentNextName) {
+                        products.add(new Product(
+                                product.getName(),
+                                product.getPrice(),
+                                0,
+                                PromotionType.NONE,
+                                NOT_PRODUCTION
+                        ));
+                    }
+                }
+            }
+            return products;
         } catch (IOException e) {
             throw new IllegalArgumentException(INVALID_INPUT_ERROR);
         }
