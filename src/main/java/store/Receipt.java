@@ -47,8 +47,8 @@ public class Receipt {
         System.out.println(divider);
 
         System.out.printf("%-8s %8d %,10d\n", "총구매액", totalQuantity, priceInfo.getTotalPrice());
-        System.out.printf("%-8s %,18d\n", "행사할인", -priceInfo.getPromotionPrice());
-        System.out.printf("%-8s %,18d\n", "멤버십할인", -priceInfo.getMembershipPrice());
+        System.out.printf("%-8s %18s\n", "행사할인", OutputFormatter.formatWithNegativeSign(priceInfo.getPromotionPrice()));
+        System.out.printf("%-8s %18s\n", "멤버십할인", OutputFormatter.formatWithNegativeSign(priceInfo.getMembershipPrice()));
         System.out.printf("%-8s %,18d\n", "내실돈", priceInfo.getPaymentPrice());
     }
 
