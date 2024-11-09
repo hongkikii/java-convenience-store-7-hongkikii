@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class ProductLoader {
@@ -21,6 +23,7 @@ public class ProductLoader {
     private static final int PROMOTION_NAME_INDEX = 3;
 
     private final Map<String, PromotionType> currentPromotions;
+    private final Set<String> promotionProductNames = new HashSet<>();
 
     public ProductLoader() {
         PromotionLoader promotionLoader = new PromotionLoader();
@@ -38,6 +41,13 @@ public class ProductLoader {
             for (int i = 0; i < productLines.size(); i++) {
                 String[] currentLine = productLines.get(i);
                 Product product = createProduct(currentLine);
+
+                if (product.getPromotionType() != PromotionType.NONE) {
+                    if (!promotionProductNames.add(product.getName())) {
+                        throw new IllegalStateException(INVALID_INPUT_ERROR);
+                    }
+                }
+
                 products.add(product);
 
                 if (product.getPromotionType() != PromotionType.NONE) {
