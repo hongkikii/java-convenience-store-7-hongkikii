@@ -1,6 +1,7 @@
 package store;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PurchaseParser {
@@ -14,7 +15,7 @@ public class PurchaseParser {
 
     public Map<String, Integer> execute(String input) {
         validate(input);
-        Map<String, Integer> result = new HashMap<>();
+        Map<String, Integer> result = new LinkedHashMap<>();
         String[] productInfos = input.split(PRODUCT_DELIMITER);
         for(String productInfo : productInfos) {
             String[] productNameAndQuantity = removeBrackets(productInfo).split(INFO_TYPE_DELIMITER);
