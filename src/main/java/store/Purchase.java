@@ -53,39 +53,30 @@ public class Purchase {
     }
 
     public Receipt getInfo(Membership membership) {
-        int generalPrice = generalProducts.keySet().stream()
-                .mapToInt(productionName ->
-                        stock.getGeneralProduct(productionName).getPrice() * generalProducts.get(productionName))
-                .sum();
-
-        int promotionPrice = promotionProducts.keySet().stream()
-                .mapToInt(productionName ->
-                        stock.getPromotionProduct(productionName).getPrice() * promotionProducts.get(productionName))
-                .sum();
-
-        int freePrice = freeProducts.keySet().stream()
-                .mapToInt(productName ->
-                        stock.getPromotionProduct(productName).getPrice() * freeProducts.get(productName))
-                .sum();
-
-        int totalPrice = generalPrice + promotionPrice + freePrice;
-        int membershipPrice = membership.getPrice();
-        int paymentPrice = totalPrice - membershipPrice - freePrice;
-
-        PriceInfo priceInfo = new PriceInfo(totalPrice, freePrice, membershipPrice, paymentPrice);
-
+        int purchasePrice = 0;
         List<ProductInfo> totalProductInfo = new ArrayList<>();
         for (String productName : purchaseProducts.keySet()) {
             Product product = stock.getGeneralProduct(productName);
             int count = purchaseProducts.get(productName);
-            totalProductInfo.add(new ProductInfo(productName, count, product.getPrice() * count));
+            int price = product.getPrice() * count;
+            totalProductInfo.add(new ProductInfo(productName, count, price));
+            purchasePrice += price;
         }
 
+        int freePrice = 0;
         List<ProductInfo> freeProductInfo = new ArrayList<>();
         for (String productName : freeProducts.keySet()) {
             Product product = stock.getPromotionProduct(productName);
-            freeProductInfo.add(new ProductInfo(productName, freeProducts.get(productName), product.getPrice()));
+            int count = freeProducts.get(productName);
+            int price = product.getPrice();
+            freeProductInfo.add(new ProductInfo(productName, count, price));
+            freePrice += count * price;
         }
+
+        int membershipPrice = membership.getPrice();
+        int paymentPrice = purchasePrice - membershipPrice - freePrice;
+
+        PriceInfo priceInfo = new PriceInfo(purchasePrice, freePrice, membershipPrice, paymentPrice);
 
         return new Receipt(totalProductInfo, freeProductInfo, priceInfo);
     }
@@ -159,8 +150,10 @@ public class Purchase {
             }
             generalProducts.put(productName, requiredGeneralCount);
         }
+        else {
+            purchaseProducts.put(productName, purchaseProducts.get(productName) - requiredGeneralCount);
+        }
         promotionResult.exceptShortage(requiredGeneralCount, availablePromotionUnit);
-        purchaseProducts.put(productName, purchaseProducts.get(productName) - requiredGeneralCount);
     }
 
     private PromotionResult calculatePromotionResult(Product promotionProduct, int purchaseCount) {
