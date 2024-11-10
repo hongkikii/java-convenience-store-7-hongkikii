@@ -4,15 +4,16 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.purchase.cart.CartParser;
 
-public class PurchaseParserTest {
+public class CartParserTest {
     @DisplayName("구매 상품과 수량을 입력받는다.")
     @Test
     void 구매_상품과_수량을_입력받는다() {
         String input = "[콜라-10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Map<String, Integer> purchaseInfo = purchaseParser.execute(input);
+        CartParser cartParser = new CartParser();
+        Map<String, Integer> purchaseInfo = cartParser.execute(input);
 
         Assertions.assertThat(purchaseInfo)
                 .containsEntry("콜라", 10)
@@ -24,8 +25,8 @@ public class PurchaseParserTest {
     void 상품명에_알파벳과_특수기호가_입력될_경우_예외가_발생한다() {
         String input = "[*라-10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -35,8 +36,8 @@ public class PurchaseParserTest {
     void 상품명에_알파벳과_공백문자가_입력될_경우_예외가_발생한다() {
         String input = "[콜 라-10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -46,8 +47,8 @@ public class PurchaseParserTest {
     void 상품명에_알파벳과_숫자가_입력될_경우_예외가_발생한다() {
         String input = "[1-10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -57,8 +58,8 @@ public class PurchaseParserTest {
     void 수량이_영일_경우_예외가_발생한다() {
         String input = "[콜라-0],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -68,8 +69,8 @@ public class PurchaseParserTest {
     void 수량이_음의_정수일_경우_예외가_발생한다() {
         String input = "[콜라--10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -79,8 +80,8 @@ public class PurchaseParserTest {
     void 수량이_1000개를_초과할_경우_예외가_발생한다() {
         String input = "[콜라-1001],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -90,8 +91,8 @@ public class PurchaseParserTest {
     void 널이_입력될_경우_예외가_발생한다() {
         String input = null;
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -101,8 +102,8 @@ public class PurchaseParserTest {
     void 아무것도_입력되지_않을_경우_예외가_발생한다() {
         String input = " ";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -112,8 +113,8 @@ public class PurchaseParserTest {
     void 입력_형식에_맞지_않게_입력될_경우_예외가_발생한다() {
         String input = "콜라-10,오렌지주스-5";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
@@ -123,8 +124,8 @@ public class PurchaseParserTest {
     void 상품명이_맞지_않게_입력될_경우_예외가_발생한다() {
         String input = "[-10],[오렌지주스-5]";
 
-        PurchaseParser purchaseParser = new PurchaseParser();
-        Assertions.assertThatThrownBy(() -> purchaseParser.execute(input))
+        CartParser cartParser = new CartParser();
+        Assertions.assertThatThrownBy(() -> cartParser.execute(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }

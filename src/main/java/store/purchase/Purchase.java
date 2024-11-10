@@ -1,5 +1,6 @@
 package store.purchase;
 
+import store.purchase.cart.Cart;
 import store.purchase.item.FreeGiftItem;
 import store.purchase.item.GeneralPurchaseItem;
 import store.purchase.item.PromotionPurchaseItem;
@@ -8,7 +9,7 @@ import store.inventory.product.Product;
 import store.inventory.promotion.PromotionResult;
 import store.inventory.Stock;
 
-public class PurchaseProcessor {
+public class Purchase {
     private final InputView inputView;
     private final Stock stock;
     private final Cart cart;
@@ -16,7 +17,7 @@ public class PurchaseProcessor {
     private final PromotionPurchaseItem promotionPurchaseItem;
     private final FreeGiftItem freeGiftItem;
 
-    public PurchaseProcessor(InputView inputView, Stock stock, Cart cart) {
+    public Purchase(InputView inputView, Stock stock, Cart cart) {
         this.stock = stock;
         this.cart = cart;
         this.inputView = inputView;

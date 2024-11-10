@@ -1,9 +1,9 @@
 package store.receipt;
 
 import java.util.List;
-import store.purchase.Cart;
+import store.purchase.cart.Cart;
 import store.purchase.Membership;
-import store.purchase.PurchaseProcessor;
+import store.purchase.Purchase;
 import store.purchase.item.FreeGiftItem;
 
 public class Receipt {
@@ -19,9 +19,9 @@ public class Receipt {
         this.receiptPrice = receiptPrice;
     }
 
-    public static Receipt of(PurchaseProcessor purchaseProcessor, Membership membership) {
-        Cart cart = purchaseProcessor.getCart();
-        FreeGiftItem freeGiftItem = purchaseProcessor.getFreeGiftItem();
+    public static Receipt of(Purchase purchase, Membership membership) {
+        Cart cart = purchase.getCart();
+        FreeGiftItem freeGiftItem = purchase.getFreeGiftItem();
 
         int purchasePrice = cart.getTotalPrice();
         int freePrice = freeGiftItem.getTotalPrice();

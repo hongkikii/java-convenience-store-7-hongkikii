@@ -10,11 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.inventory.product.Product;
 import store.inventory.Stock;
+import store.purchase.cart.Cart;
 import store.purchase.mock.MockInputView;
 import store.purchase.mock.MockStock;
 import store.view.InputView;
 
-public class PurchaseProcessorTest {
+public class PurchaseTest {
 
     private InputView positiveAnswerInputView;
 
@@ -46,9 +47,9 @@ public class PurchaseProcessorTest {
     @DisplayName("고객에게 상품이 증정될 때마다, 해당 수량 만큼 프로모션 재고에서 차감한다.")
     @Test
     void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
-        PurchaseProcessor purchaseProcessor = createPurchase("콜라", 6);
-        Map<String, Integer> payProduct = purchaseProcessor.getPromotionPurchaseItem().getValue();
-        Map<String, Integer> freeProduct = purchaseProcessor.getFreeGiftItem().getValue();
+        Purchase purchase = createPurchase("콜라", 6);
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseItem().getValue();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -59,10 +60,10 @@ public class PurchaseProcessorTest {
     @DisplayName("프로모션 적용 가능 상품을 고객이 해당 수량보다 적게 가져온 경우 추가로 증정할 수 있다.")
     @Test
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정할_수_있다() {
-        PurchaseProcessor purchaseProcessor = createPurchase("콜라", 5);
+        Purchase purchase = createPurchase("콜라", 5);
 
-        Map<String, Integer> payProduct = purchaseProcessor.getPromotionPurchaseItem().getValue();
-        Map<String, Integer> freeProduct = purchaseProcessor.getFreeGiftItem().getValue();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseItem().getValue();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -73,10 +74,10 @@ public class PurchaseProcessorTest {
     @DisplayName("프로모션 적용 가능 상품을 고객이 해당 수량보다 적게 가져온 경우 추가로 증정하지 않을 수 있다.")
     @Test
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정하지_않을_수_있다() {
-        PurchaseProcessor purchaseProcessor = createPurchase("콜라", 5, "N");
+        Purchase purchase = createPurchase("콜라", 5, "N");
 
-        Map<String, Integer> payProduct = purchaseProcessor.getPromotionPurchaseItem().getValue();
-        Map<String, Integer> freeProduct = purchaseProcessor.getFreeGiftItem().getValue();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseItem().getValue();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -87,11 +88,11 @@ public class PurchaseProcessorTest {
     @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의할 시 일반 재고에서 차감한다.")
     @Test
     void 프로모션_재고가_부족한_경우_일반_재고에서_차감한다() {
-        PurchaseProcessor purchaseProcessor = createPurchase("콜라", 11, "Y");
+        Purchase purchase = createPurchase("콜라", 11, "Y");
 
-        Map<String, Integer> promotionProduct = purchaseProcessor.getPromotionPurchaseItem().getValue();
-        Map<String, Integer> freeProduct = purchaseProcessor.getFreeGiftItem().getValue();
-        Map<String, Integer> generalProduct = purchaseProcessor.getNonPromotionPurchaseItem().getValue();
+        Map<String, Integer> promotionProduct = purchase.getPromotionPurchaseItem().getValue();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
+        Map<String, Integer> generalProduct = purchase.getNonPromotionPurchaseItem().getValue();
 
         assertTrue(promotionProduct.containsKey("콜라"));
         assertEquals(promotionProduct.get("콜라"), 6);
@@ -104,10 +105,10 @@ public class PurchaseProcessorTest {
     @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의하지 않을 시 프로모션 수량만 차감한다.")
     @Test
     void 프로모션_재고가_부족한_경우_사용자가_동의하지_않을시_프로모션_수량만_차감한다() {
-        PurchaseProcessor purchaseProcessor = createPurchase("콜라", 11, "N");
+        Purchase purchase = createPurchase("콜라", 11, "N");
 
-        Map<String, Integer> payProduct = purchaseProcessor.getPromotionPurchaseItem().getValue();
-        Map<String, Integer> freeProduct = purchaseProcessor.getFreeGiftItem().getValue();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseItem().getValue();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 6);
@@ -115,25 +116,25 @@ public class PurchaseProcessorTest {
         assertEquals(freeProduct.get("콜라"), 3);
     }
 
-    PurchaseProcessor createPurchase(String productName, int quantity, String generalPurchaseAnswer) {
+    Purchase createPurchase(String productName, int quantity, String generalPurchaseAnswer) {
         MockStock stock = new MockStock();
         Cart cart = createDesiredProduct(productName, quantity, stock);
 
         MockInputView inputView = new MockInputView();
         inputView.answer = generalPurchaseAnswer;
 
-        return new PurchaseProcessor(inputView, stock, cart);
+        return new Purchase(inputView, stock, cart);
     }
 
     void createPurchase(String productName, int quantity, Stock stock) {
         Cart cart = createDesiredProduct(productName, quantity, stock);
-        new PurchaseProcessor(positiveAnswerInputView, stock, cart);
+        new Purchase(positiveAnswerInputView, stock, cart);
     }
 
-    PurchaseProcessor createPurchase(String productName, int quantity) {
+    Purchase createPurchase(String productName, int quantity) {
         MockStock stock = new MockStock();
         Cart cart = createDesiredProduct(productName, quantity, stock);
-        return new PurchaseProcessor(positiveAnswerInputView, stock, cart);
+        return new Purchase(positiveAnswerInputView, stock, cart);
     }
 
     Cart createDesiredProduct(String productName, int quantity, Stock stock) {

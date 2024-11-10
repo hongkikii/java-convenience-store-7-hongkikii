@@ -19,13 +19,17 @@ public class OutputView {
     private static final String RECEIPT_DIVIDER = "====================================";
     private static final String FREE_ITEM_TITLE = "=============증     정===============";
 
+    public void showLine() {
+        System.out.println();
+    }
+
     public void showStartPrompt() {
         System.out.println(START_PROMPT);
     }
 
     public void showStockPrompt() {
         System.out.println(STOCK_PROMPT);
-        System.out.println();
+        showLine();
     }
 
     public void show(Stock stock) {
@@ -45,26 +49,30 @@ public class OutputView {
             }
             System.out.println(productInfo);
         }
-        System.out.println();
     }
 
     public void showPurchasePrompt() {
+        showLine();
         System.out.println(PURCHASE_PROMPT);
     }
 
     public void showMembershipPrompt() {
-        System.out.println();
+        showLine();
         System.out.println(MEMBERSHIP_PROMPT);
     }
 
     public void show(Receipt receipt) {
-        System.out.println();
+        showLine();
         printReceipt(receipt);
     }
 
     public void showAdditionalPurchasePrompt() {
-        System.out.println();
+        showLine();
         System.out.println(ADDITIONAL_PURCHASE_PROMPT);
+    }
+
+    public void show(String errorMessage) {
+        System.out.println(errorMessage);
     }
 
     private static void printReceipt(Receipt receipt) {

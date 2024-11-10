@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.inventory.Stock;
+import store.purchase.cart.Cart;
 import store.purchase.mock.MockStock;
 
 public class CartTest {
