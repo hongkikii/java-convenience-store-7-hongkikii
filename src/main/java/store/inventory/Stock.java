@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Stock {
+    private static final int MAX_PROMOTION_COUNT = 1;
+
     private final List<Product> products;
 
     public Stock(ProductProcessor productProcessor) {
@@ -22,7 +24,7 @@ public class Stock {
     public boolean hasPromotion(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName))
-                .count() >= 2;
+                .count() > MAX_PROMOTION_COUNT;
     }
 
     public boolean isPromotionStockNotEnough(String productName, int desiredQuantity) {
