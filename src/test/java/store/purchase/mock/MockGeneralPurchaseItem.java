@@ -3,12 +3,12 @@ package store.purchase.mock;
 import store.inventory.ProductProcessor;
 import store.inventory.PromotionProcessor;
 import store.inventory.Stock;
-import store.purchase.GeneralPurchase;
+import store.purchase.item.GeneralPurchaseItem;
 
-public class MockGeneralPurchase extends GeneralPurchase {
+public class MockGeneralPurchaseItem extends GeneralPurchaseItem {
     private int generalPrice = 10000;
 
-    public MockGeneralPurchase() {
+    public MockGeneralPurchaseItem() {
         super(new Stock(new ProductProcessor(new PromotionProcessor())));
     }
 

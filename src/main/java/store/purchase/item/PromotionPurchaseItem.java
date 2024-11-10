@@ -1,15 +1,15 @@
-package store.purchase;
+package store.purchase.item;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import store.inventory.Stock;
 
-public class PromotionPurchase {
+public class PromotionPurchaseItem {
     private final Stock stock;
     private Map<String, Integer> value;
 
-    public PromotionPurchase(Stock stock) {
+    public PromotionPurchaseItem(Stock stock) {
         this.stock = stock;
         this.value = new HashMap<>();
     }

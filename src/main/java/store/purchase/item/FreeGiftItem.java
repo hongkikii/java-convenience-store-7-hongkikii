@@ -1,4 +1,4 @@
-package store.purchase;
+package store.purchase.item;
 
 import java.util.ArrayList;
 import java.util.Collections;

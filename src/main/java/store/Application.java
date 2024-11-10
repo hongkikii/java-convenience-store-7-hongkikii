@@ -7,7 +7,7 @@ import store.inventory.PromotionProcessor;
 import store.inventory.Stock;
 import store.purchase.Cart;
 import store.purchase.Membership;
-import store.purchase.Purchase;
+import store.purchase.PurchaseProcessor;
 import store.purchase.PurchaseParser;
 import store.purchase.Receipt;
 import store.view.InputView;
@@ -26,15 +26,15 @@ public class Application {
             outputView.showStockPrompt();
             outputView.show(stock);
 
-            Purchase purchase = null;
-            while (purchase == null) {
+            PurchaseProcessor purchaseProcessor = null;
+            while (purchaseProcessor == null) {
                 try {
                     outputView.showPurchasePrompt();
                     String productInfo = inputView.readLine();
                     PurchaseParser purchaseParser = new PurchaseParser();
                     Map<String, Integer> desiredProducts = purchaseParser.execute(productInfo);
                     Cart cart = new Cart(stock, desiredProducts);
-                    purchase = new Purchase(inputView, stock, cart);
+                    purchaseProcessor = new PurchaseProcessor(inputView, stock, cart);
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
@@ -48,13 +48,13 @@ public class Application {
                     outputView.showMembershipPrompt();
                     String answer = inputView.readLine();
                     boolean isMembershipApplied = AnswerValidator.validate(answer);
-                    membership = new Membership(isMembershipApplied, purchase.getNonPromotionPurchase());
+                    membership = new Membership(isMembershipApplied, purchaseProcessor.getNonPromotionPurchaseItem());
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                 }
             }
-            outputView.show(Receipt.of(purchase, membership));
+            outputView.show(Receipt.of(purchaseProcessor, membership));
 
             while (true) {
                 try {

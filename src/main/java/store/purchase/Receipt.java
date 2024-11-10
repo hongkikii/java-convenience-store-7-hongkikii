@@ -3,6 +3,7 @@ package store.purchase;
 import java.util.List;
 import store.dto.PurchasePriceInfo;
 import store.dto.PurchaseProductInfo;
+import store.purchase.item.FreeGiftItem;
 
 public class Receipt {
     private final List<PurchaseProductInfo> totalPurchaseProductInfo;
@@ -15,9 +16,9 @@ public class Receipt {
         this.purchasePriceInfo = purchasePriceInfo;
     }
 
-    public static Receipt of(Purchase purchase, Membership membership) {
-        Cart cart = purchase.getCart();
-        FreeGiftItem freeGiftItem = purchase.getFreeGiftItem();
+    public static Receipt of(PurchaseProcessor purchaseProcessor, Membership membership) {
+        Cart cart = purchaseProcessor.getCart();
+        FreeGiftItem freeGiftItem = purchaseProcessor.getFreeGiftItem();
         int purchasePrice = cart.getTotalPrice();
         int freePrice = freeGiftItem.getTotalPrice();
         int membershipPrice = membership.getPrice();

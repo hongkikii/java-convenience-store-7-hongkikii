@@ -1,14 +1,16 @@
 package store.purchase;
 
+import store.purchase.item.GeneralPurchaseItem;
+
 public class Membership {
     private static final double DISCOUNT_PERCENTAGE = 0.3;
     private static final int MAX_DISCOUNT_PRICE = 8000;
 
     private final int price;
 
-    public Membership(boolean isMembershipApplied, GeneralPurchase generalPurchase) {
+    public Membership(boolean isMembershipApplied, GeneralPurchaseItem generalPurchaseItem) {
         if(isMembershipApplied) {
-            this.price = calculate(generalPurchase);
+            this.price = calculate(generalPurchaseItem);
             return;
         }
         this.price = 0;
@@ -18,8 +20,8 @@ public class Membership {
         return this.price;
     }
 
-    private int calculate(GeneralPurchase generalPurchase) {
-        int discount = (int) (generalPurchase.getTotalPrice() * DISCOUNT_PERCENTAGE);
+    private int calculate(GeneralPurchaseItem generalPurchaseItem) {
+        int discount = (int) (generalPurchaseItem.getTotalPrice() * DISCOUNT_PERCENTAGE);
         return Math.min(discount, MAX_DISCOUNT_PRICE);
     }
 }

@@ -1,4 +1,4 @@
-package store.purchase;
+package store.purchase.item;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -6,11 +6,11 @@ import java.util.Map;
 import store.inventory.Product;
 import store.inventory.Stock;
 
-public class GeneralPurchase {
+public class GeneralPurchaseItem {
     private final Stock stock;
     private final Map<String, Integer> value;
 
-    public GeneralPurchase(Stock stock) {
+    public GeneralPurchaseItem(Stock stock) {
         this.stock = stock;
         this.value = new HashMap<>();
     }
