@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CartParser {
-    private static final String INVALID_INPUT = "[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.";
+    private static final String INVALID_FORMAT_ERROR = "[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.";
     private static final String INPUT_PATTERN = "^\\[(?=.*-)[^\\]]*\\](,\\[(?=.*-)[^\\]]*\\])*$";
     private static final String INPUT_NAME_PATTERN = "^[a-zA-Z가-힣]+$";
     private static final String PRODUCT_DELIMITER = ",";
@@ -26,10 +26,10 @@ public class CartParser {
 
     private void validate(String input) {
         if(input == null || input.isBlank()) {
-            throw new IllegalArgumentException(INVALID_INPUT);
+            throw new IllegalArgumentException(INVALID_FORMAT_ERROR);
         }
         if (!input.matches(INPUT_PATTERN)) {
-            throw new IllegalArgumentException(INVALID_INPUT);
+            throw new IllegalArgumentException(INVALID_FORMAT_ERROR);
         }
     }
 
@@ -44,7 +44,7 @@ public class CartParser {
 
     private void validateProductName(String input) {
         if (!input.matches(INPUT_NAME_PATTERN)) {
-            throw new IllegalArgumentException(INVALID_INPUT);
+            throw new IllegalArgumentException(INVALID_FORMAT_ERROR);
         }
     }
 
@@ -52,10 +52,10 @@ public class CartParser {
         try {
             int quantity = Integer.parseInt(input);
             if(quantity < INPUT_MIN_QUANTITY || quantity > INPUT_MAX_QUANTITY) {
-                throw new IllegalArgumentException(INVALID_INPUT);
+                throw new IllegalArgumentException(INVALID_FORMAT_ERROR);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(INVALID_INPUT);
+            throw new IllegalArgumentException(INVALID_FORMAT_ERROR);
         }
     }
 }
