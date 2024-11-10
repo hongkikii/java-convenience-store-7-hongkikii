@@ -1,10 +1,10 @@
 package store.view;
 
 import java.util.List;
-import store.inventory.Product;
-import store.inventory.PromotionType;
+import store.inventory.product.Product;
+import store.inventory.promotion.PromotionType;
 import store.inventory.Stock;
-import store.purchase.Receipt;
+import store.receipt.Receipt;
 
 public class OutputView {
     private static final String START_PROMPT = "안녕하세요. W편의점입니다.";

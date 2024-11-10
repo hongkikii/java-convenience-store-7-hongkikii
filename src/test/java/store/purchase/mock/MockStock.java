@@ -2,10 +2,10 @@ package store.purchase.mock;
 
 import java.util.ArrayList;
 import java.util.List;
-import store.inventory.Product;
-import store.inventory.ProductProcessor;
-import store.inventory.PromotionProcessor;
-import store.inventory.PromotionType;
+import store.inventory.product.Product;
+import store.inventory.product.ProductProcessor;
+import store.inventory.promotion.PromotionProcessor;
+import store.inventory.promotion.PromotionType;
 import store.inventory.Stock;
 
 public class MockStock extends Stock {

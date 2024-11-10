@@ -1,6 +1,7 @@
-package store.inventory;
+package store.inventory.product;
 
-import store.dto.PromotionDetails;
+import store.inventory.promotion.PromotionResult;
+import store.inventory.promotion.PromotionType;
 
 public class Product {
     private final String name;
@@ -33,7 +34,7 @@ public class Product {
         return this.promotionType;
     }
 
-    public PromotionDetails getPromotionDetails(int desiredQuantity) {
+    public PromotionResult getPromotionDetails(int desiredQuantity) {
         return this.promotionType.getDetails(desiredQuantity);
     }
 

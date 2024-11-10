@@ -2,6 +2,9 @@ package store.inventory;
 
 import java.util.Collections;
 import java.util.List;
+import store.inventory.product.Product;
+import store.inventory.product.ProductProcessor;
+import store.inventory.promotion.PromotionType;
 
 public class Stock {
     private static final int MAX_PROMOTION_COUNT = 1;

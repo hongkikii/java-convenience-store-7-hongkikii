@@ -1,8 +1,6 @@
-package store.inventory;
+package store.inventory.promotion;
 
 import static store.common.Constants.INVALID_INPUT_ERROR;
-
-import store.dto.PromotionDetails;
 
 public enum PromotionType {
     ONE_PLUS_ONE(1, 1),
@@ -43,11 +41,11 @@ public enum PromotionType {
         return this.freeCount;
     }
 
-    public PromotionDetails getDetails(int purchaseCount) {
+    public PromotionResult getDetails(int purchaseCount) {
         int unit = getPurchaseCount() + getFreeCount();
         int promotionUnit = purchaseCount / unit;
         int remainder = purchaseCount % unit;
         int payCount = promotionUnit * getPurchaseCount() + remainder;
-        return new PromotionDetails(payCount, promotionUnit, remainder);
+        return new PromotionResult(payCount, promotionUnit, remainder);
     }
 }

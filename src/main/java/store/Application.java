@@ -2,14 +2,14 @@ package store;
 
 import java.util.Map;
 import store.common.AnswerValidator;
-import store.inventory.ProductProcessor;
-import store.inventory.PromotionProcessor;
+import store.inventory.product.ProductProcessor;
+import store.inventory.promotion.PromotionProcessor;
 import store.inventory.Stock;
 import store.purchase.Cart;
 import store.purchase.Membership;
 import store.purchase.PurchaseProcessor;
 import store.purchase.PurchaseParser;
-import store.purchase.Receipt;
+import store.receipt.Receipt;
 import store.view.InputView;
 import store.view.OutputView;
 

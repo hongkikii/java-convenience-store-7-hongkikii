@@ -1,4 +1,4 @@
-package store.inventory;
+package store.inventory.promotion;
 
 import static store.common.Constants.EXCEPT_LINE_COUNT;
 import static store.common.Constants.INVALID_INPUT_ERROR;
@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import store.inventory.product.Product;
 
 public class PromotionProcessor {
     private static final String PROMOTIONS_FILE_PATH = "src/main/resources/promotions.md";

@@ -1,7 +1,7 @@
 package store.purchase.mock;
 
-import store.inventory.ProductProcessor;
-import store.inventory.PromotionProcessor;
+import store.inventory.product.ProductProcessor;
+import store.inventory.promotion.PromotionProcessor;
 import store.inventory.Stock;
 import store.purchase.item.GeneralPurchaseItem;
 

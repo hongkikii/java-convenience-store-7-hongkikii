@@ -7,6 +7,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.inventory.product.Product;
+import store.inventory.product.ProductProcessor;
+import store.inventory.promotion.PromotionProcessor;
+import store.inventory.promotion.PromotionType;
 
 public class StockTest {
     private Stock stock;

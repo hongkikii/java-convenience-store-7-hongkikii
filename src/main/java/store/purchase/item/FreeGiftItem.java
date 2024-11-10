@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import store.dto.PurchaseProductInfo;
-import store.inventory.Product;
+import store.receipt.ReceiptProduct;
+import store.inventory.product.Product;
 import store.inventory.Stock;
 
 public class FreeGiftItem {
@@ -35,14 +35,14 @@ public class FreeGiftItem {
         return totalPrice;
     }
 
-    public List<PurchaseProductInfo> getInfo() {
-        List<PurchaseProductInfo> freeGiftItems = new ArrayList<>();
+    public List<ReceiptProduct> getInfo() {
+        List<ReceiptProduct> freeGiftItems = new ArrayList<>();
         for (String productName : getProductNames()) {
             Product product = stock.getPromotionProduct(productName);
             int freeQuantity = getQuantity(productName);
             if(freeQuantity <= 0) continue;
             int price = product.getPrice();
-            freeGiftItems.add(new PurchaseProductInfo(productName, freeQuantity, price));
+            freeGiftItems.add(new ReceiptProduct(productName, freeQuantity, price));
         }
         return freeGiftItems;
     }

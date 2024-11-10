@@ -3,7 +3,7 @@ package store.purchase.item;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import store.inventory.Product;
+import store.inventory.product.Product;
 import store.inventory.Stock;
 
 public class GeneralPurchaseItem {

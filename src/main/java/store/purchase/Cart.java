@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import store.dto.PurchaseProductInfo;
-import store.inventory.Product;
+import store.receipt.ReceiptProduct;
+import store.inventory.product.Product;
 import store.inventory.Stock;
 
 public class Cart {
@@ -42,14 +42,14 @@ public class Cart {
         return totalPrice;
     }
 
-    public List<PurchaseProductInfo> getInfo() {
-        List<PurchaseProductInfo> desiredProducts = new ArrayList<>();
+    public List<ReceiptProduct> getInfo() {
+        List<ReceiptProduct> desiredProducts = new ArrayList<>();
         for (String productName : getProductNames()) {
             Product product = stock.getGeneralProduct(productName);
             int desiredQuantity = getQuantity(productName);
             if(desiredQuantity <= 0) continue;
             int price = product.getPrice() * desiredQuantity;
-            desiredProducts.add(new PurchaseProductInfo(productName, desiredQuantity, price));
+            desiredProducts.add(new ReceiptProduct(productName, desiredQuantity, price));
         }
         return desiredProducts;
     }
