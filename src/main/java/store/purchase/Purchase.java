@@ -16,28 +16,28 @@ import store.inventory.Stock;
 public class Purchase {
     private final InputView inputView;
     private final Stock stock; // 재고
-    private final Map<String, Integer> promotionPurchaseProducts; // 프로모션 적용 구매 상품 이름, 개수
     private final Map<String, Integer> freeProducts; // 프로모션 적용에 의한 공짜 상품 이름, 개수
 
     private final Cart cart;
     private final NonPromotionPurchase nonPromotionPurchase;
+    private final PromotionPurchase promotionPurchase;
 
     public Purchase(InputView inputView, Stock stock, Cart cart) {
         this.stock = stock;
         this.cart = cart;
         this.inputView = inputView;
         this.nonPromotionPurchase = new NonPromotionPurchase(stock);
-        this.promotionPurchaseProducts = new HashMap<>();
+        this.promotionPurchase = new PromotionPurchase(stock);
         this.freeProducts = new HashMap<>();
         execute();
     }
 
-    public NonPromotionPurchase getGeneralPurchaseProduct() {
+    public NonPromotionPurchase getNonPromotionPurchase() {
         return nonPromotionPurchase;
     }
 
-    public Map<String, Integer> getPromotionPurchaseProducts() {
-        return Collections.unmodifiableMap(promotionPurchaseProducts);
+    public PromotionPurchase getPromotionPurchase() {
+        return promotionPurchase;
     }
 
     public Map<String, Integer> getFreeProducts() {
@@ -108,7 +108,7 @@ public class Purchase {
 
     private void record(Product promotionProduct, PromotionResult promotionResult) {
         String productName = promotionProduct.getName();
-        promotionPurchaseProducts.put(productName, promotionResult.getPayCount());
+        promotionPurchase.add(productName, promotionResult.getPayCount());
         freeProducts.put(productName, promotionResult.getFreeCount());
         promotionProduct.deduct(cart.getQuantity(productName));
     }

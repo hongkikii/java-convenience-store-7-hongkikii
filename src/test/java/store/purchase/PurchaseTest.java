@@ -47,7 +47,7 @@ public class PurchaseTest {
     @Test
     void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
         Purchase purchase = createPurchase("콜라", 6);
-        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -61,7 +61,7 @@ public class PurchaseTest {
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정할_수_있다() {
         Purchase purchase = createPurchase("콜라", 5);
 
-        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -75,7 +75,7 @@ public class PurchaseTest {
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정하지_않을_수_있다() {
         Purchase purchase = createPurchase("콜라", 5, "N");
 
-        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -89,9 +89,9 @@ public class PurchaseTest {
     void 프로모션_재고가_부족한_경우_일반_재고에서_차감한다() {
         Purchase purchase = createPurchase("콜라", 11, "Y");
 
-        Map<String, Integer> promotionProduct = purchase.getPromotionPurchaseProducts();
+        Map<String, Integer> promotionProduct = purchase.getPromotionPurchase().getValue();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
-        Map<String, Integer> generalProduct = purchase.getGeneralPurchaseProduct().getValue();
+        Map<String, Integer> generalProduct = purchase.getNonPromotionPurchase().getValue();
 
         assertTrue(promotionProduct.containsKey("콜라"));
         assertEquals(promotionProduct.get("콜라"), 6);
@@ -106,7 +106,7 @@ public class PurchaseTest {
     void 프로모션_재고가_부족한_경우_사용자가_동의하지_않을시_프로모션_수량만_차감한다() {
         Purchase purchase = createPurchase("콜라", 11, "N");
 
-        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
