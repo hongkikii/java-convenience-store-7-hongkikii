@@ -53,7 +53,7 @@ public class PurchaseTest {
         purchaseInfo.put("콜라", 6);
 
         Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
-        Map<String, Integer> payProduct = purchase.getPromotionProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -71,7 +71,7 @@ public class PurchaseTest {
 
         Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPromotionProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -91,7 +91,7 @@ public class PurchaseTest {
         negativeInputView.answer = "N";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPromotionProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));
@@ -111,9 +111,9 @@ public class PurchaseTest {
         negativeInputView.answer = "Y";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> promotionProduct = purchase.getPromotionProducts();
+        Map<String, Integer> promotionProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
-        Map<String, Integer> generalProduct = purchase.getGeneralProducts();
+        Map<String, Integer> generalProduct = purchase.getGeneralPurchaseProducts();
 
         assertTrue(promotionProduct.containsKey("콜라"));
         assertEquals(promotionProduct.get("콜라"), 6);
@@ -134,7 +134,7 @@ public class PurchaseTest {
         negativeInputView.answer = "N";
         Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
 
-        Map<String, Integer> payProduct = purchase.getPromotionProducts();
+        Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
         assertTrue(payProduct.containsKey("콜라"));

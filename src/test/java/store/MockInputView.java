@@ -10,7 +10,8 @@ public class MockInputView extends InputView {
     }
 
     @Override
-    public String readGeneralAnswer(String productName, int freeCount) {
-        return answer;
+    public boolean isPositiveToGeneral(String productName, int generalCount) {
+        if(answer.equals("Y")) return true;
+        return false;
     }
 }

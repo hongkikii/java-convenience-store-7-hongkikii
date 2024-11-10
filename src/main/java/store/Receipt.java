@@ -3,26 +3,14 @@ package store;
 import java.util.List;
 
 public class Receipt {
-    private List<ProductInfo> totalProductInfo;
-    private List<ProductInfo> freeProductInfo;
-    private PriceInfo priceInfo;
+    private final List<PurchaseProductInfo> totalPurchaseProductInfo;
+    private final List<PurchaseProductInfo> freePurchaseProductInfo;
+    private final PurchasePriceInfo purchasePriceInfo;
 
-    public Receipt(List<ProductInfo> totalProductInfo, List<ProductInfo> freeProductInfo, PriceInfo priceInfo) {
-        this.totalProductInfo = totalProductInfo;
-        this.freeProductInfo = freeProductInfo;
-        this.priceInfo = priceInfo;
-    }
-
-    public List<ProductInfo> getTotalProductInfo() {
-        return this.totalProductInfo;
-    }
-
-    public List<ProductInfo> getFreeProductInfo() {
-        return this.freeProductInfo;
-    }
-
-    public PriceInfo getPriceInfo() {
-        return this.priceInfo;
+    public Receipt(List<PurchaseProductInfo> totalPurchaseProductInfo, List<PurchaseProductInfo> freePurchaseProductInfo, PurchasePriceInfo purchasePriceInfo) {
+        this.totalPurchaseProductInfo = totalPurchaseProductInfo;
+        this.freePurchaseProductInfo = freePurchaseProductInfo;
+        this.purchasePriceInfo = purchasePriceInfo;
     }
 
     public void printReceipt() {
@@ -33,31 +21,31 @@ public class Receipt {
         System.out.printf("%-10s %9s %8s\n", "상품명", "수량", "금액");
 
         int totalQuantity = 0;
-        for (ProductInfo product : totalProductInfo) {
+        for (PurchaseProductInfo product : totalPurchaseProductInfo) {
             totalQuantity += product.getCount();
             System.out.printf("%-10s %8d %,13d\n", product.getProductName(), product.getCount(), product.getPrice());
         }
 
         System.out.println("=============증     정===============");
 
-        for (ProductInfo product : freeProductInfo) {
+        for (PurchaseProductInfo product : freePurchaseProductInfo) {
             System.out.printf("%-10s %8d\n", product.getProductName(), product.getCount());
         }
 
         System.out.println(divider);
 
-        System.out.printf("%-10s %8d %,13d\n", "총구매액", totalQuantity, priceInfo.getTotalPrice());
-        System.out.printf("%-10s %21s\n", "행사할인", OutputFormatter.formatWithNegativeSign(priceInfo.getPromotionPrice()));
-        System.out.printf("%-10s %21s\n", "멤버십할인", OutputFormatter.formatWithNegativeSign(priceInfo.getMembershipPrice()));
-        System.out.printf("%-10s %,21d\n", "내실돈", priceInfo.getPaymentPrice());
+        System.out.printf("%-10s %8d %,13d\n", "총구매액", totalQuantity, purchasePriceInfo.getTotalPrice());
+        System.out.printf("%-10s %21s\n", "행사할인", OutputFormatter.formatWithNegativeSign(purchasePriceInfo.getPromotionPrice()));
+        System.out.printf("%-10s %21s\n", "멤버십할인", OutputFormatter.formatWithNegativeSign(purchasePriceInfo.getMembershipPrice()));
+        System.out.printf("%-10s %,21d\n", "내실돈", purchasePriceInfo.getPaymentPrice());
     }
 
-    static class ProductInfo {
+    static class PurchaseProductInfo {
         private String productName;
         private int count;
         private int price;
 
-        public ProductInfo(String productName, int count, int price) {
+        public PurchaseProductInfo(String productName, int count, int price) {
             this.productName = productName;
             this.count = count;
             this.price = price;
@@ -76,13 +64,13 @@ public class Receipt {
         }
     }
 
-    static class PriceInfo {
+    static class PurchasePriceInfo {
         private int totalPrice;
         private int promotionPrice;
         private int membershipPrice;
         private int paymentPrice;
 
-        public PriceInfo(int totalPrice, int promotionPrice, int membershipPrice, int paymentPrice) {
+        public PurchasePriceInfo(int totalPrice, int promotionPrice, int membershipPrice, int paymentPrice) {
             this.totalPrice = totalPrice;
             this.promotionPrice = promotionPrice;
             this.membershipPrice = membershipPrice;
