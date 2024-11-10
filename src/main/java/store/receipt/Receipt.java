@@ -1,7 +1,7 @@
 package store.receipt;
 
 import java.util.List;
-import store.purchase.cart.Cart;
+import store.cart.Cart;
 import store.purchase.Membership;
 import store.purchase.Purchase;
 import store.purchase.item.FreeGiftItem;

@@ -1,9 +1,8 @@
-package store.purchase;
+package store.cart;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import store.purchase.cart.CartParser;
 
 public class CartParserTest {
     private static final String INVALID_FORMAT_ERROR = "[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.";

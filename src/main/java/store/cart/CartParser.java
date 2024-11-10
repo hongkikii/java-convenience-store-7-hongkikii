@@ -1,4 +1,4 @@
-package store.purchase.cart;
+package store.cart;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package store.purchase;
 
-import store.purchase.cart.Cart;
+import store.cart.Cart;
 import store.purchase.item.FreeGiftItem;
 import store.purchase.item.GeneralPurchaseItem;
 import store.purchase.item.PromotionPurchaseItem;

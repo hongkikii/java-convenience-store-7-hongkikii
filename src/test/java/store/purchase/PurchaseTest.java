@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.inventory.product.Product;
 import store.inventory.Stock;
-import store.purchase.cart.Cart;
+import store.cart.Cart;
 import store.purchase.mock.MockInputView;
 import store.purchase.mock.MockStock;
 import store.view.InputView;
