@@ -3,12 +3,12 @@ package store.purchase.mock;
 import store.inventory.ProductProcessor;
 import store.inventory.PromotionProcessor;
 import store.inventory.Stock;
-import store.purchase.NonPromotionPurchase;
+import store.purchase.GeneralPurchase;
 
-public class MockNonPromotionPurchase extends NonPromotionPurchase {
+public class MockGeneralPurchase extends GeneralPurchase {
     private int generalPrice = 10000;
 
-    public MockNonPromotionPurchase() {
+    public MockGeneralPurchase() {
         super(new Stock(new ProductProcessor(new PromotionProcessor())));
     }
 
@@ -17,7 +17,7 @@ public class MockNonPromotionPurchase extends NonPromotionPurchase {
     }
 
     @Override
-    public int getPrice() {
+    public int getTotalPrice() {
         return this.generalPrice;
     }
 }

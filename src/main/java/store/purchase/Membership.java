@@ -6,9 +6,9 @@ public class Membership {
 
     private final int price;
 
-    public Membership(boolean isMembershipApplied, NonPromotionPurchase nonPromotionPurchase) {
+    public Membership(boolean isMembershipApplied, GeneralPurchase generalPurchase) {
         if(isMembershipApplied) {
-            this.price = calculate(nonPromotionPurchase);
+            this.price = calculate(generalPurchase);
             return;
         }
         this.price = 0;
@@ -18,8 +18,8 @@ public class Membership {
         return this.price;
     }
 
-    private int calculate(NonPromotionPurchase nonPromotionPurchase) {
-        int discount = (int) (nonPromotionPurchase.getPrice() * DISCOUNT_PERCENTAGE);
+    private int calculate(GeneralPurchase generalPurchase) {
+        int discount = (int) (generalPurchase.getTotalPrice() * DISCOUNT_PERCENTAGE);
         return Math.min(discount, MAX_DISCOUNT_PRICE);
     }
 }

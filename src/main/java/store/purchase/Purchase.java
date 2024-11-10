@@ -9,7 +9,7 @@ public class Purchase {
     private final InputView inputView;
     private final Stock stock;
     private final Cart cart;
-    private final NonPromotionPurchase nonPromotionPurchase;
+    private final GeneralPurchase generalPurchase;
     private final PromotionPurchase promotionPurchase;
     private final FreeGiftItem freeGiftItem;
 
@@ -17,7 +17,7 @@ public class Purchase {
         this.stock = stock;
         this.cart = cart;
         this.inputView = inputView;
-        this.nonPromotionPurchase = new NonPromotionPurchase(stock);
+        this.generalPurchase = new GeneralPurchase(stock);
         this.promotionPurchase = new PromotionPurchase(stock);
         this.freeGiftItem = new FreeGiftItem(stock);
         execute();
@@ -27,8 +27,8 @@ public class Purchase {
         return cart;
     }
 
-    public NonPromotionPurchase getNonPromotionPurchase() {
-        return nonPromotionPurchase;
+    public GeneralPurchase getNonPromotionPurchase() {
+        return generalPurchase;
     }
 
     public PromotionPurchase getPromotionPurchase() {
@@ -66,7 +66,7 @@ public class Purchase {
         int desiredQuantity = cart.getQuantity(productName);
         Product generalProduct = stock.getGeneralProduct(productName);
         generalProduct.deduct(desiredQuantity);
-        nonPromotionPurchase.add(productName, desiredQuantity);
+        generalPurchase.add(productName, desiredQuantity);
     }
 
     private void processShortage(Product promotionProduct, Product generalProduct, PromotionDetails promotionDetails) {
@@ -76,7 +76,7 @@ public class Purchase {
 
         promotionDetails.modify(shortageQuantity, calculateAvailableFreeGiftQuantity(promotionProduct));
         if (inputView.readPositiveToGeneral(productName, shortageQuantity)) {
-            nonPromotionPurchase.replacePromotion(promotionProduct, generalProduct, shortageQuantity);
+            generalPurchase.replacePromotion(promotionProduct, generalProduct, shortageQuantity);
         }
         cart.add(productName, desiredQuantity - shortageQuantity);
     }
