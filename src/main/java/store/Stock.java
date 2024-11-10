@@ -15,6 +15,11 @@ public class Stock {
         return Collections.unmodifiableList(products);
     }
 
+    public boolean isContained(String productName) {
+        return products.stream()
+                .anyMatch(product -> product.getName().equals(productName));
+    }
+
     public boolean hasPromotion(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName))

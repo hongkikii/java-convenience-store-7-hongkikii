@@ -5,25 +5,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import store.Receipt.PurchasePriceInfo;
 import store.Receipt.PurchaseProductInfo;
 
 public class Purchase {
-    private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";
-    private static final String PRODUCT_QUANTITY_EXCEEDED = "[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.";
-
     private final InputView inputView;
     private final Stock stock; // 재고
-    private final Map<String, Integer> desiredProducts; // 사용자가 구매하고 싶어하는 상품 이름, 개수
     private final Map<String, Integer> generalPurchaseProducts; // 프로모션 미적용 구매 상품 이름, 개수
     private final Map<String, Integer> promotionPurchaseProducts; // 프로모션 적용 구매 상품 이름, 개수
     private final Map<String, Integer> freeProducts; // 프로모션 적용에 의한 공짜 상품 이름, 개수
 
-    public Purchase(InputView inputView, Stock stock, Map<String, Integer> desiredProducts) {
+    private final DesiredProduct desiredProduct;
+
+    public Purchase(InputView inputView, Stock stock, DesiredProduct desiredProduct) {
         this.stock = stock;
-        validate(desiredProducts);
-        this.desiredProducts = desiredProducts;
+        this.desiredProduct = desiredProduct;
         this.inputView = inputView;
         this.generalPurchaseProducts = new HashMap<>();
         this.promotionPurchaseProducts = new HashMap<>();
@@ -53,16 +49,7 @@ public class Purchase {
     }
 
     public Receipt getInfo(Membership membership) {
-        int purchasePrice = 0;
-        List<PurchaseProductInfo> totalPurchaseProductInfo = new ArrayList<>();
-        for (String productName : desiredProducts.keySet()) {
-            Product product = stock.getGeneralProduct(productName);
-            int count = desiredProducts.get(productName);
-            if(count <= 0) continue;
-            int price = product.getPrice() * count;
-            totalPurchaseProductInfo.add(new PurchaseProductInfo(productName, count, price));
-            purchasePrice += price;
-        }
+        int purchasePrice = desiredProduct.getTotalPrice();
 
         int freePrice = 0;
         List<PurchaseProductInfo> freePurchaseProductInfo = new ArrayList<>();
@@ -80,11 +67,11 @@ public class Purchase {
 
         PurchasePriceInfo purchasePriceInfo = new PurchasePriceInfo(purchasePrice, freePrice, membershipPrice, paymentPrice);
 
-        return new Receipt(totalPurchaseProductInfo, freePurchaseProductInfo, purchasePriceInfo);
+        return new Receipt(desiredProduct.getInfo(), freePurchaseProductInfo, purchasePriceInfo);
     }
 
     private void execute() {
-        for(String productName : desiredProducts.keySet()) {
+        for(String productName : desiredProduct.getNames()) {
             if(stock.hasPromotion(productName)) {
                 applyPromotion(productName);
                 continue;
@@ -96,9 +83,9 @@ public class Purchase {
     private void applyPromotion(String productName) {
         Product promotionProduct = stock.getPromotionProduct(productName);
         Product generalProduct = stock.getGeneralProduct(productName);
-        int purchaseCount = desiredProducts.get(productName);
+        int desiredQuantity = desiredProduct.getQuantity(productName);
 
-        PromotionResult promotionResult = calculatePromotionResult(promotionProduct, purchaseCount);
+        PromotionResult promotionResult = calculatePromotionResult(promotionProduct, desiredQuantity);
         if(isPromotionStockNotEnough(promotionProduct)) {
             processShortage(promotionProduct, generalProduct, promotionResult);
         }
@@ -107,10 +94,10 @@ public class Purchase {
     }
 
     private void applyGeneralPayment(String productName) {
-        int purchaseCount = desiredProducts.get(productName);
+        int desiredQuantity = desiredProduct.getQuantity(productName);
         Product generalProduct = stock.getGeneralProduct(productName);
-        generalProduct.deduct(purchaseCount);
-        generalPurchaseProducts.put(productName, purchaseCount);
+        generalProduct.deduct(desiredQuantity);
+        generalPurchaseProducts.put(productName, desiredQuantity);
     }
 
     private void processAdditionalFreeProduct(Product promotionProduct, PromotionResult promotionResult) {
@@ -127,17 +114,17 @@ public class Purchase {
         String productName = promotionProduct.getName();
         promotionPurchaseProducts.put(productName, promotionResult.getPayCount());
         freeProducts.put(productName, promotionResult.getFreeCount());
-        promotionProduct.deduct(desiredProducts.get(productName));
+        promotionProduct.deduct(desiredProduct.getQuantity(productName));
     }
 
     private boolean isPromotionStockNotEnough(Product promotionProduct) {
-        return promotionProduct.getQuantity() < desiredProducts.get(promotionProduct.getName());
+        return promotionProduct.getQuantity() < desiredProduct.getQuantity(promotionProduct.getName());
     }
 
     private void processShortage(Product promotionProduct, Product generalProduct, PromotionResult promotionResult) {
         PromotionType promotionType = promotionProduct.getPromotionType();
         String productName = promotionProduct.getName();
-        int purchaseCount = desiredProducts.get(productName);
+        int purchaseCount =desiredProduct.getQuantity(productName);
         int promotionQuantity = promotionProduct.getQuantity();
 
         int promotionUnit = promotionType.getPurchaseCount() + promotionType.getFreeCount();
@@ -157,7 +144,7 @@ public class Purchase {
             generalPurchaseProducts.put(productName, requiredGeneralCount);
             return;
         }
-        desiredProducts.put(productName, purchaseCount - requiredGeneralCount);
+        desiredProduct.record(productName, purchaseCount - requiredGeneralCount);
     }
 
     private PromotionResult calculatePromotionResult(Product promotionProduct, int purchaseCount) {
@@ -170,39 +157,6 @@ public class Purchase {
         String productName = promotionProduct.getName();
         promotionProduct.deduct(freeCount);
         freeProducts.put(productName, freeProducts.get(productName) + freeCount);
-        desiredProducts.put(productName, desiredProducts.get(productName) + freeCount);
-    }
-
-    private void validate(Map<String, Integer> purchaseProducts) {
-        validateProductName(purchaseProducts.keySet());
-        validateProductQuantity(purchaseProducts);
-    }
-
-    private void validateProductName(Set<String> purchaseProductNames) {
-        List<Product> products = stock.get();
-        for (String purchaseProductName : purchaseProductNames) {
-            boolean productExists = products.stream()
-                    .anyMatch(product -> product.getName().equals(purchaseProductName));
-            if (!productExists) {
-                throw new IllegalArgumentException(PRODUCT_NAME_NOT_EXISTED);
-            }
-        }
-    }
-
-    private void validateProductQuantity(Map<String, Integer> purchaseProducts) {
-        List<Product> products = stock.get();
-        purchaseProducts.forEach((productName, requiredQuantity) -> {
-            int availableQuantity = getAvailableQuantity(products, productName);
-            if (availableQuantity < requiredQuantity) {
-                throw new IllegalArgumentException(PRODUCT_QUANTITY_EXCEEDED);
-            }
-        });
-    }
-
-    private int getAvailableQuantity(List<Product> products, String productName) {
-        return products.stream()
-                .filter(product -> product.getName().equals(productName))
-                .mapToInt(Product::getQuantity)
-                .sum();
+        desiredProduct.record(productName, desiredProduct.getQuantity(productName) + freeCount);
     }
 }

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +22,7 @@ public class PurchaseTest {
     @Test
     void 입력한_상품이_프로모션_상품일_경우_프로모션_재고에서_우선_차감된다() {
         MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 6);
-
-        Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
+        createPurchase("콜라", 6, stock);
         Product promotionProduct = stock.getPromotionProduct("콜라");
 
         assertEquals(promotionProduct.getQuantity(), 4);
@@ -36,10 +32,7 @@ public class PurchaseTest {
     @Test
     void 입력한_상품이_프로모션_미적용_상품일_경우_일반_재고에서_차감한다() {
         MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("오렌지주스", 6);
-
-        Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
+        createPurchase("오렌지주스", 6, stock);
         Product generalProduct = stock.getGeneralProduct("오렌지주스");
 
         assertEquals(generalProduct.getQuantity(), 4);
@@ -48,11 +41,7 @@ public class PurchaseTest {
     @DisplayName("고객에게 상품이 증정될 때마다, 해당 수량 만큼 프로모션 재고에서 차감한다.")
     @Test
     void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 6);
-
-        Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
+        Purchase purchase = createPurchase("콜라", 6);
         Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
 
@@ -65,11 +54,7 @@ public class PurchaseTest {
     @DisplayName("프로모션 적용 가능 상품을 고객이 해당 수량보다 적게 가져온 경우 추가로 증정할 수 있다.")
     @Test
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정할_수_있다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 5);
-
-        Purchase purchase = new Purchase(positiveAnswerInputView, stock, purchaseInfo);
+        Purchase purchase = createPurchase("콜라", 5);
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
@@ -83,13 +68,7 @@ public class PurchaseTest {
     @DisplayName("프로모션 적용 가능 상품을 고객이 해당 수량보다 적게 가져온 경우 추가로 증정하지 않을 수 있다.")
     @Test
     void 프로모션_적용_가능_상품을_고객이_해당_수량보다_적게_가져온_경우_추가로_증정하지_않을_수_있다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 5);
-
-        MockInputView negativeInputView = new MockInputView();
-        negativeInputView.answer = "N";
-        Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
+        Purchase purchase = createPurchase("콜라", 5, "N");
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
@@ -103,13 +82,7 @@ public class PurchaseTest {
     @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의할 시 일반 재고에서 차감한다.")
     @Test
     void 프로모션_재고가_부족한_경우_일반_재고에서_차감한다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 11);
-
-        MockInputView negativeInputView = new MockInputView();
-        negativeInputView.answer = "Y";
-        Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
+        Purchase purchase = createPurchase("콜라", 11, "Y");
 
         Map<String, Integer> promotionProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
@@ -126,13 +99,7 @@ public class PurchaseTest {
     @DisplayName("프로모션 재고가 부족한 경우 사용자가 동의하지 않을 시 프로모션 수량만 차감한다.")
     @Test
     void 프로모션_재고가_부족한_경우_사용자가_동의하지_않을시_프로모션_수량만_차감한다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 11);
-
-        MockInputView negativeInputView = new MockInputView();
-        negativeInputView.answer = "N";
-        Purchase purchase = new Purchase(negativeInputView, stock, purchaseInfo);
+        Purchase purchase = createPurchase("콜라", 11, "N");
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
@@ -143,28 +110,30 @@ public class PurchaseTest {
         assertEquals(freeProduct.get("콜라"), 3);
     }
 
-
-    @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
-    @Test
-    void 입력한_상품이_없을_경우_예외가_발생한다() {
+    Purchase createPurchase(String productName, int quantity, String generalPurchaseAnswer) {
         MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("없는 상품", 1);
+        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
 
-        Assertions.assertThatThrownBy(() -> new Purchase(positiveAnswerInputView, stock, purchaseInfo))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+        MockInputView inputView = new MockInputView();
+        inputView.answer = generalPurchaseAnswer;
+
+        return new Purchase(inputView, stock, desiredProduct);
     }
 
-    @DisplayName("입력한 상품의 재고가 부족한 경우 예외가 발생한다.")
-    @Test
-    void 입력한_상품의_재고가_부족한_경우_예외가_발생한다() {
-        MockStock stock = new MockStock();
-        Map<String, Integer> purchaseInfo = new HashMap<>();
-        purchaseInfo.put("콜라", 100);
+    void createPurchase(String productName, int quantity, Stock stock) {
+        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
+        new Purchase(positiveAnswerInputView, stock, desiredProduct);
+    }
 
-        Assertions.assertThatThrownBy(() -> new Purchase(positiveAnswerInputView, stock, purchaseInfo))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+    Purchase createPurchase(String productName, int quantity) {
+        MockStock stock = new MockStock();
+        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
+        return new Purchase(positiveAnswerInputView, stock, desiredProduct);
+    }
+
+    DesiredProduct createDesiredProduct(String productName, int quantity, Stock stock) {
+        Map<String, Integer> desiredProducts = new HashMap<>();
+        desiredProducts.put(productName, quantity);
+        return new DesiredProduct(stock, desiredProducts);
     }
 }

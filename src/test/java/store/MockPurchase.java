@@ -6,7 +6,7 @@ public class MockPurchase extends Purchase {
     private int generalPrice = 10000;
 
     public MockPurchase() {
-        super(new InputView(), new Stock(), new HashMap<>());
+        super(new InputView(), new Stock(), new DesiredProduct(new Stock(), new HashMap<>()));
     }
 
     public void setGeneralPrice(int generalPrice) {

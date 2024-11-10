@@ -19,8 +19,9 @@ public class Application {
                     outputView.showPurchasePrompt();
                     String productInfo = inputView.readLine();
                     PurchaseParser purchaseParser = new PurchaseParser();
-                    Map<String, Integer> purchaseProducts = purchaseParser.execute(productInfo);
-                    purchase = new Purchase(inputView, stock, purchaseProducts);
+                    Map<String, Integer> desiredProducts = purchaseParser.execute(productInfo);
+                    DesiredProduct desiredProduct = new DesiredProduct(stock, desiredProducts);
+                    purchase = new Purchase(inputView, stock, desiredProduct);
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
