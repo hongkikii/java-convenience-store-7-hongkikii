@@ -13,18 +13,18 @@ public class CartTest {
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
     void 입력한_상품이_없을_경우_예외가_발생한다() {
-        assertPurchaseThrownBy("없는 상품", 1,
+        assertInvalidCart("없는 상품", 1,
                 "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
     }
 
     @DisplayName("입력한 상품의 재고가 부족한 경우 예외가 발생한다.")
     @Test
     void 입력한_상품의_재고가_부족한_경우_예외가_발생한다() {
-        assertPurchaseThrownBy("콜라", 100,
+        assertInvalidCart("콜라", 100,
                 "[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
     }
 
-    void assertPurchaseThrownBy(String productName, int quantity, String errorMessage) {
+    void assertInvalidCart(String productName, int quantity, String errorMessage) {
         MockStock stock = new MockStock();
 
         Assertions.assertThatThrownBy(() -> createCart(productName, quantity, stock))
