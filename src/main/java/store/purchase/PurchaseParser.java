@@ -14,14 +14,14 @@ public class PurchaseParser {
 
     public Map<String, Integer> execute(String input) {
         validate(input);
-        Map<String, Integer> result = new LinkedHashMap<>();
+        Map<String, Integer> desiredProducts = new LinkedHashMap<>();
         String[] productInfos = input.split(PRODUCT_DELIMITER);
         for(String productInfo : productInfos) {
             String[] productNameAndQuantity = removeBrackets(productInfo).split(INFO_TYPE_DELIMITER);
-            validateProductNameAndQuantity(productNameAndQuantity);
-            result.put(productNameAndQuantity[0], Integer.parseInt(productNameAndQuantity[1]));
+            validate(productNameAndQuantity);
+            desiredProducts.put(productNameAndQuantity[0], Integer.parseInt(productNameAndQuantity[1]));
         }
-        return result;
+        return desiredProducts;
     }
 
     private void validate(String input) {
@@ -37,7 +37,7 @@ public class PurchaseParser {
         return productInfo.substring(1, productInfo.length() - 1);
     }
 
-    private void validateProductNameAndQuantity(String[] productNameAndQuantity) {
+    private void validate(String[] productNameAndQuantity) {
         validateProductName(productNameAndQuantity[0]);
         validateProductQuantity(productNameAndQuantity[1]);
     }
