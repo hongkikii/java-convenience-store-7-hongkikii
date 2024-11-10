@@ -3,7 +3,6 @@ package store.purchase.mock;
 import store.view.InputView;
 
 public class MockInputView extends InputView {
-
     public String answer = "Y";
 
     @Override
