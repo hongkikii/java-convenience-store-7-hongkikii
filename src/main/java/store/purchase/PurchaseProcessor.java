@@ -78,7 +78,7 @@ public class PurchaseProcessor {
         int shortageQuantity = calculateShortageQuantity(promotionProduct, desiredQuantity);
 
         promotionResult.modify(shortageQuantity, calculateAvailableFreeGiftQuantity(promotionProduct));
-        if (inputView.readPositiveToGeneral(productName, shortageQuantity)) {
+        if (inputView.isPositiveToGeneral(productName, shortageQuantity)) {
             generalPurchaseItem.replacePromotion(promotionProduct, generalProduct, shortageQuantity);
         }
         cart.add(productName, desiredQuantity - shortageQuantity);
@@ -95,7 +95,7 @@ public class PurchaseProcessor {
         if (promotionResult.getRemainder() == promotionProduct.getPromotionType().getPurchaseCount()
                 && promotionProduct.getQuantity() >= promotionResult.getFreeQuantity()) {
             int freeCount = promotionProduct.getPromotionType().getFreeCount();
-            if(inputView.readPositiveToAdd(promotionProduct.getName(), freeCount)) {
+            if(inputView.isPositiveToAdd(promotionProduct.getName(), freeCount)) {
                 addFreeProduct(promotionProduct);
             }
         }
