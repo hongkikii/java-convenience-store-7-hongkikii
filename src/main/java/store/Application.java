@@ -7,6 +7,7 @@ import store.purchase.Cart;
 import store.purchase.Membership;
 import store.purchase.Purchase;
 import store.purchase.PurchaseParser;
+import store.purchase.Receipt;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -49,7 +50,7 @@ public class Application {
                     System.out.println(e.getMessage());
                 }
             }
-            outputView.show(purchase.getInfo(membership));
+            outputView.show(Receipt.of(purchase, membership));
 
             while (true) {
                 try {

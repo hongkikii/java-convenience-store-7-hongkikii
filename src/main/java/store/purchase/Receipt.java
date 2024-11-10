@@ -9,10 +9,22 @@ public class Receipt {
     private final List<ProductInfo> freeProductInfo;
     private final PurchasePriceInfo purchasePriceInfo;
 
-    public Receipt(List<ProductInfo> totalProductInfo, List<ProductInfo> freeProductInfo, PurchasePriceInfo purchasePriceInfo) {
+    private Receipt(List<ProductInfo> totalProductInfo, List<ProductInfo> freeProductInfo, PurchasePriceInfo purchasePriceInfo) {
         this.totalProductInfo = totalProductInfo;
         this.freeProductInfo = freeProductInfo;
         this.purchasePriceInfo = purchasePriceInfo;
+    }
+
+    public static Receipt of(Purchase purchase, Membership membership) {
+        Cart cart = purchase.getCart();
+        FreeGiftItem freeGiftItem = purchase.getFreeGiftItem();
+        int purchasePrice = cart.getTotalPrice();
+        int freePrice = freeGiftItem.getTotalPrice();
+        int membershipPrice = membership.getPrice();
+        int paymentPrice = purchasePrice - membershipPrice - freePrice;
+
+        PurchasePriceInfo purchasePriceInfo = new PurchasePriceInfo(purchasePrice, freePrice, membershipPrice, paymentPrice);
+        return new Receipt(cart.getInfo(), freeGiftItem.getInfo(), purchasePriceInfo);
     }
 
     public void printReceipt() {

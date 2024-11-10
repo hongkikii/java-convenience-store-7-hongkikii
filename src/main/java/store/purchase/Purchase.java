@@ -1,9 +1,8 @@
 package store.purchase;
 
-import store.dto.PurchasePriceInfo;
 import store.view.InputView;
 import store.inventory.Product;
-import store.dto.PromotionResult;
+import store.dto.PromotionDetails;
 import store.inventory.Stock;
 
 public class Purchase {
@@ -24,6 +23,10 @@ public class Purchase {
         execute();
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
     public NonPromotionPurchase getNonPromotionPurchase() {
         return nonPromotionPurchase;
     }
@@ -34,17 +37,6 @@ public class Purchase {
 
     public FreeGiftItem getFreeGiftItem() {
         return freeGiftItem;
-    }
-
-    // TODO : 분리
-    public Receipt getInfo(Membership membership) {
-        int purchasePrice = cart.getTotalPrice();
-        int freePrice = freeGiftItem.getTotalPrice();
-        int membershipPrice = membership.getPrice();
-        int paymentPrice = purchasePrice - membershipPrice - freePrice;
-
-        PurchasePriceInfo purchasePriceInfo = new PurchasePriceInfo(purchasePrice, freePrice, membershipPrice, paymentPrice);
-        return new Receipt(cart.getInfo(), freeGiftItem.getInfo(), purchasePriceInfo);
     }
 
     private void execute() {
@@ -62,12 +54,12 @@ public class Purchase {
         Product generalProduct = stock.getGeneralProduct(productName);
         int desiredQuantity = cart.getQuantity(productName);
 
-        PromotionResult promotionResult = promotionProduct.getPromotionType().getResult(desiredQuantity);
+        PromotionDetails promotionDetails = promotionProduct.getPromotionDetails(desiredQuantity);
         if(stock.isPromotionStockNotEnough(productName, desiredQuantity)) {
-            processShortage(promotionProduct, generalProduct, promotionResult);
+            processShortage(promotionProduct, generalProduct, promotionDetails);
         }
-        record(promotionProduct, promotionResult);
-        processAdditionalFreeProduct(promotionProduct, promotionResult);
+        record(promotionProduct, promotionDetails);
+        processAdditionalFreeGift(promotionProduct, promotionDetails);
     }
 
     private void applyGeneralPurchase(String productName) {
@@ -77,28 +69,28 @@ public class Purchase {
         nonPromotionPurchase.add(productName, desiredQuantity);
     }
 
-    private void processShortage(Product promotionProduct, Product generalProduct, PromotionResult promotionResult) {
+    private void processShortage(Product promotionProduct, Product generalProduct, PromotionDetails promotionDetails) {
         String productName = promotionProduct.getName();
         int desiredQuantity = cart.getQuantity(productName);
         int shortageQuantity = calculateShortageQuantity(promotionProduct, desiredQuantity);
 
-        promotionResult.modify(shortageQuantity, calculateAvailableFreeGiftQuantity(promotionProduct));
+        promotionDetails.modify(shortageQuantity, calculateAvailableFreeGiftQuantity(promotionProduct));
         if (inputView.readPositiveToGeneral(productName, shortageQuantity)) {
             nonPromotionPurchase.replacePromotion(promotionProduct, generalProduct, shortageQuantity);
         }
         cart.add(productName, desiredQuantity - shortageQuantity);
     }
 
-    private void record(Product promotionProduct, PromotionResult promotionResult) {
+    private void record(Product promotionProduct, PromotionDetails promotionDetails) {
         String productName = promotionProduct.getName();
-        promotionPurchase.add(productName, promotionResult.getPayQuantity());
-        freeGiftItem.add(productName, promotionResult.getFreeQuantity());
+        promotionPurchase.add(productName, promotionDetails.getPayQuantity());
+        freeGiftItem.add(productName, promotionDetails.getFreeQuantity());
         promotionProduct.deduct(cart.getQuantity(productName));
     }
 
-    private void processAdditionalFreeProduct(Product promotionProduct, PromotionResult promotionResult) {
-        if (promotionResult.getRemainder() == promotionProduct.getPromotionType().getPurchaseCount()
-                && promotionProduct.getQuantity() >= promotionResult.getFreeQuantity()) {
+    private void processAdditionalFreeGift(Product promotionProduct, PromotionDetails promotionDetails) {
+        if (promotionDetails.getRemainder() == promotionProduct.getPromotionType().getPurchaseCount()
+                && promotionProduct.getQuantity() >= promotionDetails.getFreeQuantity()) {
             int freeCount = promotionProduct.getPromotionType().getFreeCount();
             if(inputView.readPositiveToAdd(promotionProduct.getName(), freeCount)) {
                 addFreeProduct(promotionProduct);

@@ -1,11 +1,11 @@
 package store.dto;
 
-public class PromotionResult {
+public class PromotionDetails {
     private int payQuantity;
     private int freeQuantity;
     private int remainder;
 
-    public PromotionResult(int payQuantity, int freeQuantity, int remainder) {
+    public PromotionDetails(int payQuantity, int freeQuantity, int remainder) {
         this.payQuantity = payQuantity;
         this.freeQuantity = freeQuantity;
         this.remainder = remainder;

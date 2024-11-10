@@ -1,5 +1,7 @@
 package store.inventory;
 
+import store.dto.PromotionDetails;
+
 public class Product {
     private final String name;
     private final int price;
@@ -29,6 +31,10 @@ public class Product {
 
     public PromotionType getPromotionType() {
         return this.promotionType;
+    }
+
+    public PromotionDetails getPromotionDetails(int desiredQuantity) {
+        return this.promotionType.getDetails(desiredQuantity);
     }
 
     public String getPromotionName() {
