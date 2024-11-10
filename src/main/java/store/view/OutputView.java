@@ -15,9 +15,29 @@ public class OutputView {
     private static final String MEMBERSHIP_PROMPT = "멤버십 할인을 받으시겠습니까? (Y/N)";
     private static final String ADDITIONAL_PURCHASE_PROMPT = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
 
+    private static final String PRODUCT_PREFIX = "- ";
+    private static final String PRICE_FORMAT = "%,d원 ";
+    private static final String QUANTITY_SUFFIX = "개 ";
+    private static final String OUT_OF_STOCK = "재고 없음 ";
+
     private static final String RECEIPT_TITLE = "==============W 편의점================";
     private static final String RECEIPT_DIVIDER = "====================================";
     private static final String FREE_ITEM_TITLE = "=============증     정===============";
+
+    private static final String RECEIPT_COLUMN_FORMAT = "%-10s %9s %8s\n";
+    private static final String RECEIPT_PRODUCT_FORMAT = "%-10s %8d %,13d\n";
+    private static final String RECEIPT_FREE_ITEM_FORMAT = "%-10s %8d\n";
+    private static final String RECEIPT_PRICE_FORMAT = "%-10s %21s\n";
+    private static final String RECEIPT_FINAL_PRICE_FORMAT = "%-10s %,21d\n";
+    private static final String DISCOUNT_PRICE_FORMAT = "-%,d";
+
+    private static final String COLUMN_PRODUCT_NAME = "상품명";
+    private static final String COLUMN_QUANTITY = "수량";
+    private static final String COLUMN_PRICE = "금액";
+    private static final String TOTAL_PURCHASE = "총구매액";
+    private static final String PROMOTION_DISCOUNT = "행사할인";
+    private static final String MEMBERSHIP_DISCOUNT = "멤버십할인";
+    private static final String FINAL_PAYMENT = "내실돈";
 
     public void showLine() {
         System.out.println();
@@ -33,22 +53,7 @@ public class OutputView {
     }
 
     public void show(Stock stock) {
-        List<Product> products = stock.get();
-        for (Product product : products) {
-            StringBuilder productInfo = new StringBuilder("- ");
-            productInfo.append(product.getName() + " ");
-            productInfo.append(String.format("%,d", product.getPrice()) + "원 ");
-            if (product.getQuantity() > 0) {
-                productInfo.append(product.getQuantity() + "개 ");
-            }
-            if (product.getQuantity() <= 0) {
-                productInfo.append("재고 없음 ");
-            }
-            if (product.getPromotionType() != PromotionType.NONE) {
-                productInfo.append(product.getPromotionName() + " ");
-            }
-            System.out.println(productInfo);
-        }
+        stock.get().forEach(product -> System.out.println(formatProductInfo(product)));
     }
 
     public void showPurchasePrompt() {
@@ -75,6 +80,25 @@ public class OutputView {
         System.out.println(errorMessage);
     }
 
+    private String formatProductInfo(Product product) {
+        return new StringBuilder(PRODUCT_PREFIX)
+                .append(product.getName()).append(" ")
+                .append(String.format(PRICE_FORMAT, product.getPrice()))
+                .append(formatQuantity(product.getQuantity()))
+                .append(formatPromotion(product.getPromotionType(), product.getPromotionName()))
+                .toString();
+    }
+
+    private String formatQuantity(int quantity) {
+        if(quantity > 0) return quantity + QUANTITY_SUFFIX;
+        return OUT_OF_STOCK;
+    }
+
+    private String formatPromotion(PromotionType promotionType, String promotionName) {
+        if (promotionType != PromotionType.NONE) return promotionName + " ";
+        return "";
+    }
+
     private static void printReceipt(Receipt receipt) {
         printReceiptHeader();
         printProductDetails(receipt.getTotalReceiptProduct(), receipt.getReceiptPrice().totalPrice());
@@ -84,33 +108,34 @@ public class OutputView {
 
     private static void printReceiptHeader() {
         System.out.println(RECEIPT_TITLE);
-        System.out.printf("%-10s %9s %8s\n", "상품명", "수량", "금액");
+        System.out.printf(RECEIPT_COLUMN_FORMAT, COLUMN_PRODUCT_NAME, COLUMN_QUANTITY, COLUMN_PRICE);
     }
 
     private static void printProductDetails(List<ReceiptProduct> products, int totalPrice) {
         int totalQuantity = 0;
         for (ReceiptProduct product : products) {
             totalQuantity += product.quantity();
-            System.out.printf("%-10s %8d %,13d\n", product.productName(), product.quantity(), product.price());
+            System.out.printf(RECEIPT_PRODUCT_FORMAT,
+                    product.productName(), product.quantity(), product.price());
         }
-        System.out.printf("%-10s %8d %,13d\n", "총구매액", totalQuantity, totalPrice);
+        System.out.printf(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, totalPrice);
     }
 
     private static void printFreeItemDetails(List<ReceiptProduct> freeProducts) {
         System.out.println(FREE_ITEM_TITLE);
         for (ReceiptProduct product : freeProducts) {
-            System.out.printf("%-10s %8d\n", product.productName(), product.quantity());
+            System.out.printf(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity());
         }
     }
 
     private static void printReceiptFooter(ReceiptPrice receiptPrice) {
         System.out.println(RECEIPT_DIVIDER);
-        System.out.printf("%-10s %21s\n", "행사할인", formatPrice(receiptPrice.promotionPrice()));
-        System.out.printf("%-10s %21s\n", "멤버십할인", formatPrice(receiptPrice.membershipPrice()));
-        System.out.printf("%-10s %,21d\n", "내실돈", receiptPrice.paymentPrice());
+        System.out.printf(RECEIPT_PRICE_FORMAT, PROMOTION_DISCOUNT, formatPrice(receiptPrice.promotionPrice()));
+        System.out.printf(RECEIPT_PRICE_FORMAT, MEMBERSHIP_DISCOUNT, formatPrice(receiptPrice.membershipPrice()));
+        System.out.printf(RECEIPT_FINAL_PRICE_FORMAT, FINAL_PAYMENT, receiptPrice.paymentPrice());
     }
 
     private static String formatPrice(int price) {
-        return String.format("-%,d", Math.abs(price));
+        return String.format(DISCOUNT_PRICE_FORMAT, Math.abs(price));
     }
 }
