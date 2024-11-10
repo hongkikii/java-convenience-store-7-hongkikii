@@ -2,6 +2,8 @@ package store;
 
 import java.util.Map;
 import store.common.AnswerValidator;
+import store.inventory.ProductProcessor;
+import store.inventory.PromotionProcessor;
 import store.inventory.Stock;
 import store.purchase.Cart;
 import store.purchase.Membership;
@@ -15,7 +17,9 @@ public class Application {
     public static void main(String[] args) {
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
-        Stock stock = new Stock();
+        PromotionProcessor promotionProcessor = new PromotionProcessor();
+        ProductProcessor productProcessor = new ProductProcessor(promotionProcessor);
+        Stock stock = new Stock(productProcessor);
 
         while (true) {
             outputView.showStartPrompt();

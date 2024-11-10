@@ -6,9 +6,8 @@ import java.util.List;
 public class Stock {
     private final List<Product> products;
 
-    public Stock() {
-        ProductLoader productLoader = new ProductLoader();
-        this.products = productLoader.execute();
+    public Stock(ProductProcessor productProcessor) {
+        this.products = productProcessor.getProducts();
     }
 
     public List<Product> get() {

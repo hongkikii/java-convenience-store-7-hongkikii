@@ -3,6 +3,8 @@ package store.purchase.mock;
 import java.util.ArrayList;
 import java.util.List;
 import store.inventory.Product;
+import store.inventory.ProductProcessor;
+import store.inventory.PromotionProcessor;
 import store.inventory.PromotionType;
 import store.inventory.Stock;
 
@@ -10,7 +12,7 @@ public class MockStock extends Stock {
     private final List<Product> products;
 
     public MockStock() {
-        super();
+        super(new ProductProcessor(new PromotionProcessor()));
         Product product1 = new Product("콜라", 1000, 10, PromotionType.NONE, "");
         Product product2 = new Product("콜라", 1000, 10, PromotionType.TWO_PLUS_ONE, "탄산2+1");
         Product product3 = new Product("오렌지주스", 1000, 10, PromotionType.NONE, "");
