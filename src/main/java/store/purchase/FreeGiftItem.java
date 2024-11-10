@@ -5,12 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import store.dto.PurchaseProductInfo;
 import store.inventory.Product;
 import store.inventory.Stock;
 
 public class FreeGiftItem {
-    private Stock stock;
+    private final Stock stock;
     private final Map<String, Integer> value;
 
     public FreeGiftItem(Stock stock) {
@@ -24,24 +25,24 @@ public class FreeGiftItem {
 
     public int getTotalPrice() {
         int totalPrice = 0;
-        for (String productName : value.keySet()) {
+        for (String productName : getProductNames()) {
             Product product = stock.getPromotionProduct(productName);
-            int count = value.get(productName);
-            if(count <= 0) continue;
+            int freeQuantity = getQuantity(productName);
+            if(freeQuantity <= 0) continue;
             int price = product.getPrice();
-            totalPrice += count * price;
+            totalPrice += freeQuantity * price;
         }
         return totalPrice;
     }
 
     public List<PurchaseProductInfo> getInfo() {
         List<PurchaseProductInfo> freeGiftItems = new ArrayList<>();
-        for (String productName : value.keySet()) {
+        for (String productName : getProductNames()) {
             Product product = stock.getPromotionProduct(productName);
-            int count = value.get(productName);
-            if(count <= 0) continue;
+            int freeQuantity = getQuantity(productName);
+            if(freeQuantity <= 0) continue;
             int price = product.getPrice();
-            freeGiftItems.add(new PurchaseProductInfo(productName, count, price));
+            freeGiftItems.add(new PurchaseProductInfo(productName, freeQuantity, price));
         }
         return freeGiftItems;
     }
@@ -50,7 +51,11 @@ public class FreeGiftItem {
         value.put(productName, value.getOrDefault(productName, 0) + quantity);
     }
 
-    public int getQuantity(String productName) {
+    private Set<String> getProductNames() {
+        return Collections.unmodifiableSet(value.keySet());
+    }
+
+    private int getQuantity(String productName) {
         return value.get(productName);
     }
 }
