@@ -1,6 +1,7 @@
 package store.purchase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,14 +16,14 @@ public class Cart {
     private final Stock stock;
     private final Map<String, Integer> value;
 
-    public Cart(Stock stock, Map<String, Integer> value) {
+    public Cart(Stock stock, Map<String, Integer> desireProducts) {
         this.stock = stock;
-        validate(value);
-        this.value = value;
+        validate(desireProducts);
+        this.value = desireProducts;
     }
 
     public Set<String> getProductNames() {
-        return value.keySet();
+        return Collections.unmodifiableSet(value.keySet());
     }
 
     public int getQuantity(String productName) {
@@ -31,26 +32,26 @@ public class Cart {
 
     public int getTotalPrice() {
         int totalPrice = 0;
-        for (String productName : value.keySet()) {
+        for (String productName : getProductNames()) {
             Product product = stock.getGeneralProduct(productName);
-            int count = value.get(productName);
-            if(count <= 0) continue;
-            int price = product.getPrice() * count;
+            int desiredQuantity = getQuantity(productName);
+            if(desiredQuantity <= 0) continue;
+            int price = product.getPrice() * desiredQuantity;
             totalPrice += price;
         }
         return totalPrice;
     }
 
     public List<PurchaseProductInfo> getInfo() {
-        List<PurchaseProductInfo> totalPurchaseProductInfo = new ArrayList<>();
-        for (String productName : value.keySet()) {
+        List<PurchaseProductInfo> desiredProducts = new ArrayList<>();
+        for (String productName : getProductNames()) {
             Product product = stock.getGeneralProduct(productName);
-            int count = value.get(productName);
-            if(count <= 0) continue;
-            int price = product.getPrice() * count;
-            totalPurchaseProductInfo.add(new PurchaseProductInfo(productName, count, price));
+            int desiredQuantity = getQuantity(productName);
+            if(desiredQuantity <= 0) continue;
+            int price = product.getPrice() * desiredQuantity;
+            desiredProducts.add(new PurchaseProductInfo(productName, desiredQuantity, price));
         }
-        return totalPurchaseProductInfo;
+        return desiredProducts;
     }
 
     public void add(String productName, int quantity) {
@@ -63,28 +64,20 @@ public class Cart {
     }
 
     private void validateName(Set<String> desiredProductNames) {
-        for (String desiredProductName : desiredProductNames) {
-            boolean productExists = stock.isContained(desiredProductName);
+        for (String productName : desiredProductNames) {
+            boolean productExists = stock.isContained(productName);
             if (!productExists) {
                 throw new IllegalArgumentException(PRODUCT_NAME_NOT_EXISTED);
             }
         }
     }
 
-    private void validateQuantity(Map<String, Integer> purchaseProducts) {
-        List<Product> products = stock.get();
-        purchaseProducts.forEach((productName, requiredQuantity) -> {
-            int availableQuantity = getAvailableQuantity(products, productName);
-            if (availableQuantity < requiredQuantity) {
+    private void validateQuantity(Map<String, Integer> desiredProducts) {
+        desiredProducts.forEach((productName, desiredQuantity) -> {
+            int availableQuantity = stock.getAvailableQuantity(productName);
+            if (availableQuantity < desiredQuantity) {
                 throw new IllegalArgumentException(PRODUCT_QUANTITY_EXCEEDED);
             }
         });
-    }
-
-    private int getAvailableQuantity(List<Product> products, String productName) {
-        return products.stream()
-                .filter(product -> product.getName().equals(productName))
-                .mapToInt(Product::getQuantity)
-                .sum();
     }
 }

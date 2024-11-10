@@ -46,4 +46,11 @@ public class Stock {
                 .findAny()
                 .get();
     }
+
+    public int getAvailableQuantity(String productName) {
+        return products.stream()
+                .filter(product -> product.getName().equals(productName))
+                .mapToInt(Product::getQuantity)
+                .sum();
+    }
 }
