@@ -1,16 +1,21 @@
 package store.common;
 
+import static store.common.Constants.INVALID_INPUT_ERROR;
+
 public class AnswerValidator {
+    private static String POSITIVE_ANSWER = "Y";
+    private static String NEGATIVE_ANSWER = "N";
+
     public static boolean validate(String answer) {
         if (answer == null || answer.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException(INVALID_INPUT_ERROR);
         }
-        if (answer.equals("Y")) {
+        if (answer.equals(POSITIVE_ANSWER)) {
             return true;
         }
-        if (answer.equals("N")) {
+        if (answer.equals(NEGATIVE_ANSWER)) {
             return false;
         }
-        throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+        throw new IllegalArgumentException(INVALID_INPUT_ERROR);
     }
 }
