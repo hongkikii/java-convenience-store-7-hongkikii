@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class PurchaseProcessorParserTest {
+public class PurchaseParserTest {
     @DisplayName("구매 상품과 수량을 입력받는다.")
     @Test
     void 구매_상품과_수량을_입력받는다() {
