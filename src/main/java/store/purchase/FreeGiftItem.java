@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import store.dto.ProductInfo;
+import store.dto.PurchaseProductInfo;
 import store.inventory.Product;
 import store.inventory.Stock;
 
@@ -34,14 +34,14 @@ public class FreeGiftItem {
         return totalPrice;
     }
 
-    public List<ProductInfo> getInfo() {
-        List<ProductInfo> freeGiftItems = new ArrayList<>();
+    public List<PurchaseProductInfo> getInfo() {
+        List<PurchaseProductInfo> freeGiftItems = new ArrayList<>();
         for (String productName : value.keySet()) {
             Product product = stock.getPromotionProduct(productName);
             int count = value.get(productName);
             if(count <= 0) continue;
             int price = product.getPrice();
-            freeGiftItems.add(new ProductInfo(productName, count, price));
+            freeGiftItems.add(new PurchaseProductInfo(productName, count, price));
         }
         return freeGiftItems;
     }
