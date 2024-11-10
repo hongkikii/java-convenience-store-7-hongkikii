@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import store.inventory.Stock;
 import store.purchase.mock.MockStock;
 
-public class DesiredProductTest {
+public class CartTest {
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")
     @Test
     void 입력한_상품이_없을_경우_예외가_발생한다() {
@@ -26,14 +26,14 @@ public class DesiredProductTest {
     void assertPurchaseThrownBy(String productName, int quantity, String errorMessage) {
         MockStock stock = new MockStock();
 
-        Assertions.assertThatThrownBy(() -> createDesiredProduct(productName, quantity, stock))
+        Assertions.assertThatThrownBy(() -> createCart(productName, quantity, stock))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(errorMessage);
     }
 
-    void createDesiredProduct(String productName, int quantity, Stock stock) {
+    void createCart(String productName, int quantity, Stock stock) {
         Map<String, Integer> desiredProducts = new HashMap<>();
         desiredProducts.put(productName, quantity);
-        new DesiredProduct(stock, desiredProducts);
+        new Cart(stock, desiredProducts);
     }
 }

@@ -8,20 +8,20 @@ import store.dto.PurchaseProductInfo;
 import store.inventory.Product;
 import store.inventory.Stock;
 
-public class DesiredProduct {
+public class Cart {
     private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";
     private static final String PRODUCT_QUANTITY_EXCEEDED = "[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.";
 
     private final Stock stock;
     private final Map<String, Integer> value;
 
-    public DesiredProduct(Stock stock, Map<String, Integer> value) {
+    public Cart(Stock stock, Map<String, Integer> value) {
         this.stock = stock;
         validate(value);
         this.value = value;
     }
 
-    public Set<String> getNames() {
+    public Set<String> getProductNames() {
         return value.keySet();
     }
 
@@ -53,7 +53,7 @@ public class DesiredProduct {
         return totalProductInfo;
     }
 
-    public void record(String productName, int quantity) {
+    public void add(String productName, int quantity) {
         value.put(productName, quantity);
     }
 

@@ -3,7 +3,7 @@ package store;
 import java.util.Map;
 import store.common.AnswerValidator;
 import store.inventory.Stock;
-import store.purchase.DesiredProduct;
+import store.purchase.Cart;
 import store.purchase.Membership;
 import store.purchase.Purchase;
 import store.purchase.PurchaseParser;
@@ -28,8 +28,8 @@ public class Application {
                     String productInfo = inputView.readLine();
                     PurchaseParser purchaseParser = new PurchaseParser();
                     Map<String, Integer> desiredProducts = purchaseParser.execute(productInfo);
-                    DesiredProduct desiredProduct = new DesiredProduct(stock, desiredProducts);
-                    purchase = new Purchase(inputView, stock, desiredProduct);
+                    Cart cart = new Cart(stock, desiredProducts);
+                    purchase = new Purchase(inputView, stock, cart);
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());

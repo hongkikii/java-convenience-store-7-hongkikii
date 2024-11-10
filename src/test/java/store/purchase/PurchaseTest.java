@@ -117,28 +117,28 @@ public class PurchaseTest {
 
     Purchase createPurchase(String productName, int quantity, String generalPurchaseAnswer) {
         MockStock stock = new MockStock();
-        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
+        Cart cart = createDesiredProduct(productName, quantity, stock);
 
         MockInputView inputView = new MockInputView();
         inputView.answer = generalPurchaseAnswer;
 
-        return new Purchase(inputView, stock, desiredProduct);
+        return new Purchase(inputView, stock, cart);
     }
 
     void createPurchase(String productName, int quantity, Stock stock) {
-        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
-        new Purchase(positiveAnswerInputView, stock, desiredProduct);
+        Cart cart = createDesiredProduct(productName, quantity, stock);
+        new Purchase(positiveAnswerInputView, stock, cart);
     }
 
     Purchase createPurchase(String productName, int quantity) {
         MockStock stock = new MockStock();
-        DesiredProduct desiredProduct = createDesiredProduct(productName, quantity, stock);
-        return new Purchase(positiveAnswerInputView, stock, desiredProduct);
+        Cart cart = createDesiredProduct(productName, quantity, stock);
+        return new Purchase(positiveAnswerInputView, stock, cart);
     }
 
-    DesiredProduct createDesiredProduct(String productName, int quantity, Stock stock) {
+    Cart createDesiredProduct(String productName, int quantity, Stock stock) {
         Map<String, Integer> desiredProducts = new HashMap<>();
         desiredProducts.put(productName, quantity);
-        return new DesiredProduct(stock, desiredProducts);
+        return new Cart(stock, desiredProducts);
     }
 }
