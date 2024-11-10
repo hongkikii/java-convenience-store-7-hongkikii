@@ -5,33 +5,13 @@ import static store.common.Constants.INVALID_INPUT_ERROR;
 import store.dto.PromotionDetails;
 
 public enum PromotionType {
-    ONE_PLUS_ONE(1, 1) {
-        @Override
-        public PromotionDetails getDetails(int purchaseCount) {
-            int promotionUnit = purchaseCount / 2;
-            int remainder = purchaseCount % 2;
-            int payCount = promotionUnit + remainder;
-            return new PromotionDetails(payCount, promotionUnit, remainder);
-        }
-    },
-    TWO_PLUS_ONE(2, 1){
-        @Override
-        public PromotionDetails getDetails(int purchaseCount) {
-            int promotionUnit = purchaseCount / 3;
-            int remainder = purchaseCount % 3;
-            int payCount = promotionUnit * 2 + remainder;
-            return new PromotionDetails(payCount, promotionUnit, remainder);
-        }
-    },
+    ONE_PLUS_ONE(1, 1),
+    TWO_PLUS_ONE(2, 1),
     NONE(0, 0),
     NOT_NOW(0, 0);
 
     private final int purchaseCount;
     private final int freeCount;
-
-    public PromotionDetails getDetails(int purchaseCount) {
-        return null;
-    }
 
     PromotionType(int purchaseCount, int freeCount) {
         this.purchaseCount = purchaseCount;
@@ -61,5 +41,13 @@ public enum PromotionType {
 
     public int getFreeCount() {
         return this.freeCount;
+    }
+
+    public PromotionDetails getDetails(int purchaseCount) {
+        int unit = getPurchaseCount() + getFreeCount();
+        int promotionUnit = purchaseCount / unit;
+        int remainder = purchaseCount % unit;
+        int payCount = promotionUnit * getPurchaseCount() + remainder;
+        return new PromotionDetails(payCount, promotionUnit, remainder);
     }
 }
