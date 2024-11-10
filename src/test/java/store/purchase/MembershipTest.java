@@ -26,7 +26,7 @@ public class MembershipTest {
 
     void assertMembershipApplied(int generalPrice, int expectedDiscount, boolean isMembershipApplied) {
         MockGeneralPurchaseItem generalPurchaseProduct = new MockGeneralPurchaseItem();
-        generalPurchaseProduct.setGeneralPrice(generalPrice);
+        generalPurchaseProduct.generalPrice = generalPrice;
         Membership memberShip = new Membership(isMembershipApplied, generalPurchaseProduct);
 
         Assertions.assertEquals(memberShip.getPrice(), expectedDiscount);
