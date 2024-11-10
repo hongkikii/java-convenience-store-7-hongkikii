@@ -1,5 +1,6 @@
 package store.purchase;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import store.inventory.Stock;
@@ -14,7 +15,7 @@ public class PromotionPurchase {
     }
 
     public Map<String, Integer> getValue() {
-        return this.value;
+        return Collections.unmodifiableMap(value);
     }
 
     public void add(String productName, int quantity) {

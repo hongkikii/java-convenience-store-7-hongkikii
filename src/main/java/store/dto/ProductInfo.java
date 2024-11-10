@@ -1,11 +1,11 @@
 package store.dto;
 
-public class PurchaseProductInfo {
+public class ProductInfo {
     private String productName;
     private int count;
     private int price;
 
-    public PurchaseProductInfo(String productName, int count, int price) {
+    public ProductInfo(String productName, int count, int price) {
         this.productName = productName;
         this.count = count;
         this.price = price;

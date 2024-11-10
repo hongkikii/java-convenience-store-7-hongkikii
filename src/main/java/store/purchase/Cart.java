@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import store.dto.PurchaseProductInfo;
+import store.dto.ProductInfo;
 import store.inventory.Product;
 import store.inventory.Stock;
 
@@ -41,14 +41,14 @@ public class Cart {
         return totalPrice;
     }
 
-    public List<PurchaseProductInfo> getInfo() {
-        List<PurchaseProductInfo> totalProductInfo = new ArrayList<>();
+    public List<ProductInfo> getInfo() {
+        List<ProductInfo> totalProductInfo = new ArrayList<>();
         for (String productName : value.keySet()) {
             Product product = stock.getGeneralProduct(productName);
             int count = value.get(productName);
             if(count <= 0) continue;
             int price = product.getPrice() * count;
-            totalProductInfo.add(new PurchaseProductInfo(productName, count, price));
+            totalProductInfo.add(new ProductInfo(productName, count, price));
         }
         return totalProductInfo;
     }

@@ -48,7 +48,7 @@ public class PurchaseTest {
     void 고객에게_상품이_증정될_때마다_해당_수량만큼_프로모션_재고에서_차감한다() {
         Purchase purchase = createPurchase("콜라", 6);
         Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
-        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -62,7 +62,7 @@ public class PurchaseTest {
         Purchase purchase = createPurchase("콜라", 5);
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
-        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -76,7 +76,7 @@ public class PurchaseTest {
         Purchase purchase = createPurchase("콜라", 5, "N");
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
-        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 4);
@@ -90,7 +90,7 @@ public class PurchaseTest {
         Purchase purchase = createPurchase("콜라", 11, "Y");
 
         Map<String, Integer> promotionProduct = purchase.getPromotionPurchase().getValue();
-        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
         Map<String, Integer> generalProduct = purchase.getNonPromotionPurchase().getValue();
 
         assertTrue(promotionProduct.containsKey("콜라"));
@@ -107,7 +107,7 @@ public class PurchaseTest {
         Purchase purchase = createPurchase("콜라", 11, "N");
 
         Map<String, Integer> payProduct = purchase.getPromotionPurchase().getValue();
-        Map<String, Integer> freeProduct = purchase.getFreeProducts();
+        Map<String, Integer> freeProduct = purchase.getFreeGiftItem().getValue();
 
         assertTrue(payProduct.containsKey("콜라"));
         assertEquals(payProduct.get("콜라"), 6);

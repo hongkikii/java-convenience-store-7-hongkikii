@@ -2,16 +2,16 @@ package store.purchase;
 
 import java.util.List;
 import store.dto.PurchasePriceInfo;
-import store.dto.PurchaseProductInfo;
+import store.dto.ProductInfo;
 
 public class Receipt {
-    private final List<PurchaseProductInfo> totalPurchaseProductInfo;
-    private final List<PurchaseProductInfo> freePurchaseProductInfo;
+    private final List<ProductInfo> totalProductInfo;
+    private final List<ProductInfo> freeProductInfo;
     private final PurchasePriceInfo purchasePriceInfo;
 
-    public Receipt(List<PurchaseProductInfo> totalPurchaseProductInfo, List<PurchaseProductInfo> freePurchaseProductInfo, PurchasePriceInfo purchasePriceInfo) {
-        this.totalPurchaseProductInfo = totalPurchaseProductInfo;
-        this.freePurchaseProductInfo = freePurchaseProductInfo;
+    public Receipt(List<ProductInfo> totalProductInfo, List<ProductInfo> freeProductInfo, PurchasePriceInfo purchasePriceInfo) {
+        this.totalProductInfo = totalProductInfo;
+        this.freeProductInfo = freeProductInfo;
         this.purchasePriceInfo = purchasePriceInfo;
     }
 
@@ -23,14 +23,14 @@ public class Receipt {
         System.out.printf("%-10s %9s %8s\n", "상품명", "수량", "금액");
 
         int totalQuantity = 0;
-        for (PurchaseProductInfo product : totalPurchaseProductInfo) {
+        for (ProductInfo product : totalProductInfo) {
             totalQuantity += product.getCount();
             System.out.printf("%-10s %8d %,13d\n", product.getProductName(), product.getCount(), product.getPrice());
         }
 
         System.out.println("=============증     정===============");
 
-        for (PurchaseProductInfo product : freePurchaseProductInfo) {
+        for (ProductInfo product : freeProductInfo) {
             System.out.printf("%-10s %8d\n", product.getProductName(), product.getCount());
         }
 

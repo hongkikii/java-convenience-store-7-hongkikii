@@ -1,12 +1,6 @@
 package store.purchase;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import store.dto.PurchasePriceInfo;
-import store.dto.PurchaseProductInfo;
 import store.view.InputView;
 import store.inventory.Product;
 import store.dto.PromotionResult;
@@ -15,12 +9,11 @@ import store.inventory.Stock;
 
 public class Purchase {
     private final InputView inputView;
-    private final Stock stock; // 재고
-    private final Map<String, Integer> freeProducts; // 프로모션 적용에 의한 공짜 상품 이름, 개수
-
+    private final Stock stock;
     private final Cart cart;
     private final NonPromotionPurchase nonPromotionPurchase;
     private final PromotionPurchase promotionPurchase;
+    private final FreeGiftItem freeGiftItem;
 
     public Purchase(InputView inputView, Stock stock, Cart cart) {
         this.stock = stock;
@@ -28,7 +21,7 @@ public class Purchase {
         this.inputView = inputView;
         this.nonPromotionPurchase = new NonPromotionPurchase(stock);
         this.promotionPurchase = new PromotionPurchase(stock);
-        this.freeProducts = new HashMap<>();
+        this.freeGiftItem = new FreeGiftItem(stock);
         execute();
     }
 
@@ -40,30 +33,18 @@ public class Purchase {
         return promotionPurchase;
     }
 
-    public Map<String, Integer> getFreeProducts() {
-        return Collections.unmodifiableMap(freeProducts);
+    public FreeGiftItem getFreeGiftItem() {
+        return freeGiftItem;
     }
 
     public Receipt getInfo(Membership membership) {
         int purchasePrice = cart.getTotalPrice();
-
-        int freePrice = 0;
-        List<PurchaseProductInfo> freePurchaseProductInfo = new ArrayList<>();
-        for (String productName : freeProducts.keySet()) {
-            Product product = stock.getPromotionProduct(productName);
-            int count = freeProducts.get(productName);
-            if(count <= 0) continue;
-            int price = product.getPrice();
-            freePurchaseProductInfo.add(new PurchaseProductInfo(productName, count, price));
-            freePrice += count * price;
-        }
-
+        int freePrice = freeGiftItem.getTotalPrice();
         int membershipPrice = membership.getPrice();
         int paymentPrice = purchasePrice - membershipPrice - freePrice;
 
         PurchasePriceInfo purchasePriceInfo = new PurchasePriceInfo(purchasePrice, freePrice, membershipPrice, paymentPrice);
-
-        return new Receipt(cart.getInfo(), freePurchaseProductInfo, purchasePriceInfo);
+        return new Receipt(cart.getInfo(), freeGiftItem.getInfo(), purchasePriceInfo);
     }
 
     private void execute() {
@@ -109,7 +90,7 @@ public class Purchase {
     private void record(Product promotionProduct, PromotionResult promotionResult) {
         String productName = promotionProduct.getName();
         promotionPurchase.add(productName, promotionResult.getPayCount());
-        freeProducts.put(productName, promotionResult.getFreeCount());
+        freeGiftItem.add(productName, promotionResult.getFreeCount());
         promotionProduct.deduct(cart.getQuantity(productName));
     }
 
@@ -152,7 +133,7 @@ public class Purchase {
         int freeCount = promotionProduct.getPromotionType().getFreeCount();
         String productName = promotionProduct.getName();
         promotionProduct.deduct(freeCount);
-        freeProducts.put(productName, freeProducts.get(productName) + freeCount);
+        freeGiftItem.add(productName, freeGiftItem.getQuantity(productName) + freeCount);
         cart.add(productName, cart.getQuantity(productName) + freeCount);
     }
 }
