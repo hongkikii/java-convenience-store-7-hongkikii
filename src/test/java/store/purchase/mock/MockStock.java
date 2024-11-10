@@ -1,31 +1,38 @@
-package store;
+package store.purchase.mock;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import store.inventory.Product;
+import store.inventory.PromotionType;
+import store.inventory.Stock;
 
-public class Stock {
+public class MockStock extends Stock {
     private final List<Product> products;
 
-    public Stock() {
-        ProductLoader productLoader = new ProductLoader();
-        this.products = productLoader.execute();
+    public MockStock() {
+        super();
+        Product product1 = new Product("콜라", 1000, 10, PromotionType.NONE, "");
+        Product product2 = new Product("콜라", 1000, 10, PromotionType.TWO_PLUS_ONE, "탄산2+1");
+        Product product3 = new Product("오렌지주스", 1000, 10, PromotionType.NONE, "");
+        this.products = new ArrayList<>();
+        products.add(product1);
+        products.add(product2);
+        products.add(product3);
     }
 
+    @Override
     public List<Product> get() {
-        return Collections.unmodifiableList(products);
+        return this.products;
     }
 
-    public boolean isContained(String productName) {
-        return products.stream()
-                .anyMatch(product -> product.getName().equals(productName));
-    }
-
+    @Override
     public boolean hasPromotion(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName))
                 .count() >= 2;
     }
 
+    @Override
     public Product getGeneralProduct(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName)
@@ -34,6 +41,7 @@ public class Stock {
                 .get();
     }
 
+    @Override
     public Product getPromotionProduct(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName)

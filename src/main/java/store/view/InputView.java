@@ -1,6 +1,7 @@
-package store;
+package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
+import store.common.AnswerValidator;
 
 public class InputView {
     public String readLine() {

@@ -1,6 +1,5 @@
-package store;
+package store.purchase;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

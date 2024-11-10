@@ -1,6 +1,8 @@
-package store;
+package store.inventory;
 
-import static store.Constants.INVALID_INPUT_ERROR;
+import static store.common.Constants.INVALID_INPUT_ERROR;
+
+import store.dto.PromotionResult;
 
 public enum PromotionType {
     ONE_PLUS_ONE(1, 1) {

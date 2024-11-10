@@ -1,4 +1,4 @@
-package store;
+package store.common;
 
 public class Constants {
     public static final String INVALID_INPUT_ERROR = "[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.";

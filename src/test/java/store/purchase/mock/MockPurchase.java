@@ -1,6 +1,10 @@
-package store;
+package store.purchase.mock;
 
 import java.util.HashMap;
+import store.inventory.Stock;
+import store.purchase.DesiredProduct;
+import store.purchase.Purchase;
+import store.view.InputView;
 
 public class MockPurchase extends Purchase {
     private int generalPrice = 10000;

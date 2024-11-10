@@ -1,10 +1,12 @@
-package store;
+package store.purchase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import store.Receipt.PurchaseProductInfo;
+import store.dto.PurchaseProductInfo;
+import store.inventory.Product;
+import store.inventory.Stock;
 
 public class DesiredProduct {
     private static final String PRODUCT_NAME_NOT_EXISTED = "[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.";

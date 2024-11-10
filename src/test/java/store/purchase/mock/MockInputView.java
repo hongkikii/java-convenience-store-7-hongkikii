@@ -1,4 +1,6 @@
-package store;
+package store.purchase.mock;
+
+import store.view.InputView;
 
 public class MockInputView extends InputView {
 

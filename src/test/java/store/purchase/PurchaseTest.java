@@ -1,4 +1,4 @@
-package store;
+package store.purchase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,6 +8,11 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.inventory.Product;
+import store.inventory.Stock;
+import store.purchase.mock.MockInputView;
+import store.purchase.mock.MockStock;
+import store.view.InputView;
 
 public class PurchaseTest {
 

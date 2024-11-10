@@ -1,8 +1,9 @@
-package store;
+package store.purchase;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.purchase.mock.MockPurchase;
 
 public class MembershipTest {
     @DisplayName("멤버십 회원은 프로모션 미적용 금액의 30%를 할인 받는다.")

@@ -1,4 +1,4 @@
-package store;
+package store.dto;
 
 public class PromotionResult {
     private int payCount;

@@ -1,4 +1,4 @@
-package store;
+package store.common;
 
 public class AnswerValidator {
     public static boolean validate(String answer) {

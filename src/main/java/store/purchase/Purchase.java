@@ -1,12 +1,17 @@
-package store;
+package store.purchase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import store.Receipt.PurchasePriceInfo;
-import store.Receipt.PurchaseProductInfo;
+import store.dto.PurchasePriceInfo;
+import store.dto.PurchaseProductInfo;
+import store.view.InputView;
+import store.inventory.Product;
+import store.dto.PromotionResult;
+import store.inventory.PromotionType;
+import store.inventory.Stock;
 
 public class Purchase {
     private final InputView inputView;

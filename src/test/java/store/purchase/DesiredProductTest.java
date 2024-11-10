@@ -1,10 +1,12 @@
-package store;
+package store.purchase;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.inventory.Stock;
+import store.purchase.mock.MockStock;
 
 public class DesiredProductTest {
     @DisplayName("입력한 상품이 없을 경우 예외가 발생한다.")

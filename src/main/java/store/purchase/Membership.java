@@ -1,4 +1,4 @@
-package store;
+package store.purchase;
 
 public class Membership {
     private final int price;

@@ -1,8 +1,8 @@
-package store;
+package store.inventory;
 
-import static store.Constants.EXCEPT_LINE_COUNT;
-import static store.Constants.INVALID_INPUT_ERROR;
-import static store.Constants.WORD_DELIMITER;
+import static store.common.Constants.EXCEPT_LINE_COUNT;
+import static store.common.Constants.INVALID_INPUT_ERROR;
+import static store.common.Constants.WORD_DELIMITER;
 
 import java.io.IOException;
 import java.nio.file.Files;
