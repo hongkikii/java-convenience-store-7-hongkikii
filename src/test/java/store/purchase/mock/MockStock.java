@@ -9,6 +9,8 @@ import store.inventory.promotion.PromotionType;
 import store.inventory.Stock;
 
 public class MockStock extends Stock {
+    private static final int MAX_PROMOTION_COUNT = 1;
+
     private final List<Product> products;
 
     public MockStock() {
@@ -31,7 +33,7 @@ public class MockStock extends Stock {
     public boolean hasPromotion(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName))
-                .count() >= 2;
+                .count() > MAX_PROMOTION_COUNT;
     }
 
     @Override
