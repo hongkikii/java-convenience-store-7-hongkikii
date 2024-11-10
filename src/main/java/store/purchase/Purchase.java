@@ -16,33 +16,24 @@ import store.inventory.Stock;
 public class Purchase {
     private final InputView inputView;
     private final Stock stock; // 재고
-    private final Map<String, Integer> generalPurchaseProducts; // 프로모션 미적용 구매 상품 이름, 개수
     private final Map<String, Integer> promotionPurchaseProducts; // 프로모션 적용 구매 상품 이름, 개수
     private final Map<String, Integer> freeProducts; // 프로모션 적용에 의한 공짜 상품 이름, 개수
 
     private final DesiredProduct desiredProduct;
+    private final NonPromotionPurchase nonPromotionPurchase;
 
     public Purchase(InputView inputView, Stock stock, DesiredProduct desiredProduct) {
         this.stock = stock;
         this.desiredProduct = desiredProduct;
         this.inputView = inputView;
-        this.generalPurchaseProducts = new HashMap<>();
+        this.nonPromotionPurchase = new NonPromotionPurchase(stock);
         this.promotionPurchaseProducts = new HashMap<>();
         this.freeProducts = new HashMap<>();
         execute();
     }
 
-    public int getGeneralPrice() {
-        int generalPrice = 0;
-        for(String productName: generalPurchaseProducts.keySet()) {
-            Product generalProduct = stock.getGeneralProduct(productName);
-            generalPrice += generalProduct.getPrice() * generalPurchaseProducts.get(productName);
-        }
-        return generalPrice;
-    }
-
-    public Map<String, Integer> getGeneralPurchaseProducts() {
-        return Collections.unmodifiableMap(generalPurchaseProducts);
+    public NonPromotionPurchase getGeneralPurchaseProduct() {
+        return nonPromotionPurchase;
     }
 
     public Map<String, Integer> getPromotionPurchaseProducts() {
@@ -102,7 +93,7 @@ public class Purchase {
         int desiredQuantity = desiredProduct.getQuantity(productName);
         Product generalProduct = stock.getGeneralProduct(productName);
         generalProduct.deduct(desiredQuantity);
-        generalPurchaseProducts.put(productName, desiredQuantity);
+        nonPromotionPurchase.add(productName, desiredQuantity);
     }
 
     private void processAdditionalFreeProduct(Product promotionProduct, PromotionResult promotionResult) {
@@ -146,7 +137,7 @@ public class Purchase {
             } else {
                 generalProduct.deduct(requiredGeneralCount);
             }
-            generalPurchaseProducts.put(productName, requiredGeneralCount);
+            nonPromotionPurchase.add(productName, requiredGeneralCount);
             return;
         }
         desiredProduct.record(productName, purchaseCount - requiredGeneralCount);

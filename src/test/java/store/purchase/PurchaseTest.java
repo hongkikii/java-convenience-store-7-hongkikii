@@ -91,7 +91,7 @@ public class PurchaseTest {
 
         Map<String, Integer> promotionProduct = purchase.getPromotionPurchaseProducts();
         Map<String, Integer> freeProduct = purchase.getFreeProducts();
-        Map<String, Integer> generalProduct = purchase.getGeneralPurchaseProducts();
+        Map<String, Integer> generalProduct = purchase.getGeneralPurchaseProduct().getValue();
 
         assertTrue(promotionProduct.containsKey("콜라"));
         assertEquals(promotionProduct.get("콜라"), 6);

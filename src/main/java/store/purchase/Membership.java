@@ -3,9 +3,9 @@ package store.purchase;
 public class Membership {
     private final int price;
 
-    public Membership(boolean isMemberShipApplied, Purchase purchase) {
+    public Membership(boolean isMemberShipApplied, NonPromotionPurchase nonPromotionPurchase) {
         if(isMemberShipApplied) {
-            this.price = calculate(purchase);
+            this.price = calculate(nonPromotionPurchase);
             return;
         }
         this.price = 0;
@@ -15,8 +15,8 @@ public class Membership {
         return this.price;
     }
 
-    private int calculate(Purchase purchase) {
-        int discount = (int) (purchase.getGeneralPrice() * 0.3);
+    private int calculate(NonPromotionPurchase nonPromotionPurchase) {
+        int discount = (int) (nonPromotionPurchase.getPrice() * 0.3);
         if (discount > 8000) {
             return 8000;
         }

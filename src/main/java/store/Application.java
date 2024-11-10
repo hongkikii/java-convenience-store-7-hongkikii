@@ -43,7 +43,7 @@ public class Application {
                     outputView.showMembershipPrompt();
                     String answer = inputView.readLine();
                     boolean isMembershipApplied = AnswerValidator.validate(answer);
-                    membership = new Membership(isMembershipApplied, purchase);
+                    membership = new Membership(isMembershipApplied, purchase.getGeneralPurchaseProduct());
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
