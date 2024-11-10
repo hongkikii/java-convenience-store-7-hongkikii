@@ -26,6 +26,10 @@ public class Stock {
                 .count() >= 2;
     }
 
+    public boolean isPromotionStockNotEnough(String productName, int desiredQuantity) {
+        return getPromotionProduct(productName).getQuantity() < desiredQuantity;
+    }
+
     public Product getGeneralProduct(String productName) {
         return products.stream()
                 .filter(product -> product.getName().equals(productName)

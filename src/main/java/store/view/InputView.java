@@ -8,7 +8,7 @@ public class InputView {
         return Console.readLine();
     }
 
-    public boolean isPositiveToGeneral(String productName, int generalCount) {
+    public boolean readPositiveToGeneral(String productName, int generalCount) {
         do {
             try {
                 System.out.println();
@@ -25,7 +25,7 @@ public class InputView {
         } while (true);
     }
 
-    public boolean isPositiveToAdd(String productName, int freeCount) {
+    public boolean readPositiveToAdd(String productName, int freeCount) {
         do {
             try {
                 System.out.println();

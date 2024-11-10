@@ -47,7 +47,7 @@ public class FreeGiftItem {
     }
 
     public void add(String productName, int quantity) {
-        value.put(productName, quantity);
+        value.put(productName, value.getOrDefault(productName, 0) + quantity);
     }
 
     public int getQuantity(String productName) {

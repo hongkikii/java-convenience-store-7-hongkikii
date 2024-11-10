@@ -1,31 +1,30 @@
 package store.dto;
 
 public class PromotionResult {
-    private int payCount;
-    private int freeCount;
+    private int payQuantity;
+    private int freeQuantity;
     private int remainder;
 
-    public PromotionResult(int payCount, int freeCount, int remainder) {
-        this.payCount = payCount;
-        this.freeCount = freeCount;
+    public PromotionResult(int payQuantity, int freeQuantity, int remainder) {
+        this.payQuantity = payQuantity;
+        this.freeQuantity = freeQuantity;
         this.remainder = remainder;
     }
 
-
-    public int getPayCount() {
-        return payCount;
+    public int getPayQuantity() {
+        return payQuantity;
     }
 
-    public int getFreeCount() {
-        return freeCount;
+    public int getFreeQuantity() {
+        return freeQuantity;
     }
 
     public int getRemainder() {
         return remainder;
     }
 
-    public void exceptShortage(int requiredGeneralCount, int availablePromotionUnit) {
-        this.payCount -= requiredGeneralCount;
-        this.freeCount = availablePromotionUnit;
+    public void modify(int shortageQuantity, int availablePromotionUnit) {
+        this.payQuantity -= shortageQuantity;
+        this.freeQuantity = availablePromotionUnit;
     }
 }

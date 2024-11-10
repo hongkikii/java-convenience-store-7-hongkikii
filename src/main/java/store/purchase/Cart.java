@@ -54,7 +54,7 @@ public class Cart {
     }
 
     public void add(String productName, int quantity) {
-        value.put(productName, quantity);
+        value.put(productName, value.getOrDefault(productName, 0) + quantity);
     }
 
     private void validate(Map<String, Integer> desiredProducts) {

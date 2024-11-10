@@ -31,4 +31,17 @@ public class NonPromotionPurchase {
     public void add(String productName, int quantity) {
         value.put(productName, quantity);
     }
+
+    public void replacePromotion(Product promotionProduct, Product generalProduct, int shortageQuantity) {
+        String promotionProductName = promotionProduct.getName();
+        int promotionQuantity = promotionProduct.getQuantity();
+        add(promotionProductName, shortageQuantity);
+        int promotionRemain = promotionQuantity - shortageQuantity;
+        if (promotionRemain > 0) {
+            promotionProduct.deduct(promotionRemain);
+            generalProduct.deduct(shortageQuantity - promotionRemain);
+            return;
+        }
+        generalProduct.deduct(shortageQuantity);
+    }
 }

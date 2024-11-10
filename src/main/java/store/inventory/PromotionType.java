@@ -51,6 +51,10 @@ public enum PromotionType {
         throw new IllegalArgumentException(INVALID_INPUT_ERROR);
     }
 
+    public int getPromotionUnit() {
+        return purchaseCount + freeCount;
+    }
+
     public int getPurchaseCount() {
         return this.purchaseCount;
     }
