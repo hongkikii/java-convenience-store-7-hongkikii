@@ -143,7 +143,8 @@ public class OutputView {
     }
 
     private String formatFreeItemLine(ReceiptProduct product) {
-        return String.format(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity()).replace(" ", WIDE_SPACE);
+        return String.format(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity())
+                .replace(" ", WIDE_SPACE);
     }
 
     private void printReceiptFooter(ReceiptPrice receiptPrice) {
@@ -155,17 +156,20 @@ public class OutputView {
     }
 
     private String formatTotalPurchaseLine(ReceiptPrice receiptPrice) {
-        String formattedLine = String.format(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, receiptPrice.totalPrice())
+        String formattedLine = String.format(
+                RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, receiptPrice.totalPrice())
                 .replace(" ", WIDE_SPACE);
         return addExtraSpacing(formattedLine, totalQuantity);
     }
 
     private String formatDiscountLine(String discountType, int discountPrice) {
-        return String.format(RECEIPT_PROMOTION_PRICE_FORMAT, discountType, formatNegativePrice(discountPrice)).replace(" ", WIDE_SPACE);
+        return String.format(RECEIPT_PROMOTION_PRICE_FORMAT, discountType, formatNegativePrice(discountPrice))
+                .replace(" ", WIDE_SPACE);
     }
 
     private String formatFinalPaymentLine(int paymentPrice) {
-        return String.format(RECEIPT_PAYMENT_PRICE_FORMAT, FINAL_PAYMENT, formatPrice(paymentPrice)).replace(" ", WIDE_SPACE);
+        return String.format(RECEIPT_PAYMENT_PRICE_FORMAT, FINAL_PAYMENT, formatPrice(paymentPrice))
+                .replace(" ", WIDE_SPACE);
     }
 
     private String formatPrice(int price) {
