@@ -3,14 +3,11 @@ package store.purchase.item;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import store.inventory.Stock;
 
 public class PromotionPurchaseItem {
-    private final Stock stock;
-    private Map<String, Integer> value;
+    private final Map<String, Integer> value;
 
-    public PromotionPurchaseItem(Stock stock) {
-        this.stock = stock;
+    public PromotionPurchaseItem() {
         this.value = new HashMap<>();
     }
 

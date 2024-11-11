@@ -22,7 +22,7 @@ public class Purchase {
         this.cart = cart;
         this.inputView = inputView;
         this.generalPurchaseItem = new GeneralPurchaseItem(stock);
-        this.promotionPurchaseItem = new PromotionPurchaseItem(stock);
+        this.promotionPurchaseItem = new PromotionPurchaseItem();
         this.freeGiftItem = new FreeGiftItem(stock);
         execute();
     }
