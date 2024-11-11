@@ -3,8 +3,8 @@ package store.common;
 import static store.common.Constants.INVALID_INPUT_ERROR;
 
 public class AnswerValidator {
-    private static String POSITIVE_ANSWER = "Y";
-    private static String NEGATIVE_ANSWER = "N";
+    private static final String POSITIVE_ANSWER = "Y";
+    private static final String NEGATIVE_ANSWER = "N";
 
     public static boolean validate(String answer) {
         if (answer == null || answer.isEmpty()) {
