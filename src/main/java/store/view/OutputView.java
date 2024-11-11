@@ -119,6 +119,7 @@ public class OutputView {
     }
 
     private void printProductDetails(List<ReceiptProduct> products) {
+        totalQuantity = 0;
         products.forEach(product -> {
             totalQuantity += product.quantity();
             System.out.println(formatProductLine(product));

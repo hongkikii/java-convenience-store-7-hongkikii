@@ -81,6 +81,7 @@ public class Purchase {
         promotionResult.modify(shortageQuantity, calculateAvailableFreeGiftQuantity(promotionProduct));
         if (inputView.isPositiveToGeneral(productName, shortageQuantity)) {
             generalPurchaseItem.replacePromotion(promotionProduct, generalProduct, shortageQuantity);
+            return;
         }
         cart.add(productName, desiredQuantity - shortageQuantity);
     }
