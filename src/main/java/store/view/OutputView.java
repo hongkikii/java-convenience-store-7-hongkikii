@@ -24,11 +24,11 @@ public class OutputView {
     private static final String RECEIPT_DIVIDER = "====================================";
     private static final String FREE_ITEM_TITLE = "=============증     정===============";
 
-    private static final String RECEIPT_COLUMN_FORMAT = "%-13s %-6s %-6s";
-    private static final String RECEIPT_PRODUCT_FORMAT = "%-13s %-5d %-,6d";
-    private static final String RECEIPT_FREE_ITEM_FORMAT = "%-7s %7d";
-    private static final String RECEIPT_PROMOTION_PRICE_FORMAT = "%-20s %-6s";
-    private static final String RECEIPT_PAYMENT_PRICE_FORMAT = "%-20s %6s";
+    private static final String RECEIPT_COLUMN_FORMAT = "%-17s %-8s %-6s";
+    private static final String RECEIPT_PRODUCT_FORMAT = "%-17s %-7d %-,6d";
+    private static final String RECEIPT_FREE_ITEM_FORMAT = "%-17s %-7d";
+    private static final String RECEIPT_PROMOTION_PRICE_FORMAT = "%-27s %-6s";
+    private static final String RECEIPT_PAYMENT_PRICE_FORMAT = "%-28s %6s";
     private static final String DISCOUNT_PRICE_FORMAT = "%,d";
 
     private static final String COLUMN_PRODUCT_NAME = "상품명";
@@ -39,7 +39,7 @@ public class OutputView {
     private static final String MEMBERSHIP_DISCOUNT = "멤버십할인";
     private static final String FINAL_PAYMENT = "내실돈";
 
-    private static final String WIDE_SPACE = "\u3000";
+    private static final String WIDE_SPACE = "\u0020";
     private int totalQuantity = 0;
 
     public void showLine() {
