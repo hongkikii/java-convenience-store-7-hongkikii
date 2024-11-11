@@ -24,12 +24,11 @@ public class OutputView {
     private static final String RECEIPT_DIVIDER = "====================================";
     private static final String FREE_ITEM_TITLE = "=============증     정===============";
 
-    private static final String RECEIPT_COLUMN_FORMAT = "%-10s %9s %8s\n";
-    private static final String RECEIPT_PRODUCT_FORMAT = "%-10s %8d %,13d\n";
-    private static final String RECEIPT_FREE_ITEM_FORMAT = "%-10s %8d\n";
-    private static final String RECEIPT_PRICE_FORMAT = "%-10s %21s\n";
-    private static final String RECEIPT_FINAL_PRICE_FORMAT = "%-10s %,21d\n";
-    private static final String DISCOUNT_PRICE_FORMAT = "-%,d";
+    private static final String RECEIPT_COLUMN_FORMAT = "%-13s %-6s %-6s";
+    private static final String RECEIPT_PRODUCT_FORMAT = "%-13s %-5d %-,6d";
+    private static final String RECEIPT_FREE_ITEM_FORMAT = "%-7s %7d";
+    private static final String RECEIPT_PROMOTION_PRICE_FORMAT = "%-20s %-6s";
+    private static final String DISCOUNT_PRICE_FORMAT = "%,d";
 
     private static final String COLUMN_PRODUCT_NAME = "상품명";
     private static final String COLUMN_QUANTITY = "수량";
@@ -38,6 +37,9 @@ public class OutputView {
     private static final String PROMOTION_DISCOUNT = "행사할인";
     private static final String MEMBERSHIP_DISCOUNT = "멤버십할인";
     private static final String FINAL_PAYMENT = "내실돈";
+
+    private static final String WIDE_SPACE = "\u3000";
+    private int totalQuantity = 0;
 
     public void showLine() {
         System.out.println();
@@ -99,43 +101,62 @@ public class OutputView {
         return "";
     }
 
-    private static void printReceipt(Receipt receipt) {
+    private void printReceipt(Receipt receipt) {
         printReceiptHeader();
-        printProductDetails(receipt.getTotalReceiptProduct(), receipt.getReceiptPrice().totalPrice());
+        printProductDetails(receipt.getTotalReceiptProduct());
         printFreeItemDetails(receipt.getFreeReceiptProduct());
         printReceiptFooter(receipt.getReceiptPrice());
     }
 
-    private static void printReceiptHeader() {
+    private void printReceiptHeader() {
         System.out.println(RECEIPT_TITLE);
-        System.out.printf(RECEIPT_COLUMN_FORMAT, COLUMN_PRODUCT_NAME, COLUMN_QUANTITY, COLUMN_PRICE);
+        System.out.println(String.format(RECEIPT_COLUMN_FORMAT, COLUMN_PRODUCT_NAME, COLUMN_QUANTITY, COLUMN_PRICE).replace(" " , WIDE_SPACE));
     }
 
-    private static void printProductDetails(List<ReceiptProduct> products, int totalPrice) {
-        int totalQuantity = 0;
+    private void printProductDetails(List<ReceiptProduct> products) {
         for (ReceiptProduct product : products) {
             totalQuantity += product.quantity();
-            System.out.printf(RECEIPT_PRODUCT_FORMAT,
-                    product.productName(), product.quantity(), product.price());
+            String formattedLine = String.format(RECEIPT_PRODUCT_FORMAT, product.productName(), product.quantity(), product.price()).replace(" ", WIDE_SPACE);
+            int quantityStartIndex = formattedLine.indexOf(String.valueOf(product.quantity()));
+            int quantityEndIndex = quantityStartIndex + String.valueOf(product.quantity()).length();
+
+            formattedLine = formattedLine.substring(0, quantityEndIndex + 1) + "  " + formattedLine.substring(quantityEndIndex + 1);
+            System.out.println(formattedLine);
         }
-        System.out.printf(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, totalPrice);
     }
 
-    private static void printFreeItemDetails(List<ReceiptProduct> freeProducts) {
+    private void printFreeItemDetails(List<ReceiptProduct> freeProducts) {
         System.out.println(FREE_ITEM_TITLE);
         for (ReceiptProduct product : freeProducts) {
-            System.out.printf(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity());
+            System.out.println(String.format(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity()).replace(" " , WIDE_SPACE));
         }
     }
 
-    private static void printReceiptFooter(ReceiptPrice receiptPrice) {
+    private void printReceiptFooter(ReceiptPrice receiptPrice) {
         System.out.println(RECEIPT_DIVIDER);
-        System.out.printf(RECEIPT_PRICE_FORMAT, PROMOTION_DISCOUNT, formatPrice(receiptPrice.promotionPrice()));
-        System.out.printf(RECEIPT_PRICE_FORMAT, MEMBERSHIP_DISCOUNT, formatPrice(receiptPrice.membershipPrice()));
-        System.out.printf(RECEIPT_FINAL_PRICE_FORMAT, FINAL_PAYMENT, receiptPrice.paymentPrice());
+
+        String formattedPrice = String.format(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, receiptPrice.totalPrice()).replace(" ", WIDE_SPACE);
+        int totalQuantityStartIndex = formattedPrice.indexOf(String.valueOf(totalQuantity));
+        int totalQuantityEndIndex = totalQuantityStartIndex + String.valueOf(totalQuantity).length();
+
+        formattedPrice = formattedPrice.substring(0, totalQuantityEndIndex + 1) + "  " + formattedPrice.substring(totalQuantityEndIndex + 1);
+        System.out.println(formattedPrice);
+
+        String formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, PROMOTION_DISCOUNT, negativeFormatPrice(receiptPrice.promotionPrice())).replace(" ", WIDE_SPACE);
+        System.out.println(formattedLine);
+
+        formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, MEMBERSHIP_DISCOUNT, negativeFormatPrice(receiptPrice.membershipPrice())).replace(" ", WIDE_SPACE);
+        System.out.println(formattedLine);
+
+        formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, FINAL_PAYMENT, formatPrice(receiptPrice.paymentPrice())).replace(" ", WIDE_SPACE);
+        System.out.println(formattedLine);
     }
 
-    private static String formatPrice(int price) {
+    private String formatPrice(int price) {
         return String.format(DISCOUNT_PRICE_FORMAT, Math.abs(price));
+    }
+
+    private String negativeFormatPrice(int price) {
+        return String.format("-" + DISCOUNT_PRICE_FORMAT, Math.abs(price));
     }
 }
