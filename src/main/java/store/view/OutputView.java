@@ -28,6 +28,7 @@ public class OutputView {
     private static final String RECEIPT_PRODUCT_FORMAT = "%-13s %-5d %-,6d";
     private static final String RECEIPT_FREE_ITEM_FORMAT = "%-7s %7d";
     private static final String RECEIPT_PROMOTION_PRICE_FORMAT = "%-20s %-6s";
+    private static final String RECEIPT_PAYMENT_PRICE_FORMAT = "%-20s %6s";
     private static final String DISCOUNT_PRICE_FORMAT = "%,d";
 
     private static final String COLUMN_PRODUCT_NAME = "상품명";
@@ -101,7 +102,7 @@ public class OutputView {
         return "";
     }
 
-    private void printReceipt(Receipt receipt) {
+    public void printReceipt(Receipt receipt) {
         printReceiptHeader();
         printProductDetails(receipt.getTotalReceiptProduct());
         printFreeItemDetails(receipt.getFreeReceiptProduct());
@@ -110,53 +111,68 @@ public class OutputView {
 
     private void printReceiptHeader() {
         System.out.println(RECEIPT_TITLE);
-        System.out.println(String.format(RECEIPT_COLUMN_FORMAT, COLUMN_PRODUCT_NAME, COLUMN_QUANTITY, COLUMN_PRICE).replace(" " , WIDE_SPACE));
+        System.out.println(formatColumnHeader());
+    }
+
+    private String formatColumnHeader() {
+        return String.format(RECEIPT_COLUMN_FORMAT, COLUMN_PRODUCT_NAME, COLUMN_QUANTITY, COLUMN_PRICE).replace(" ", WIDE_SPACE);
     }
 
     private void printProductDetails(List<ReceiptProduct> products) {
-        for (ReceiptProduct product : products) {
+        products.forEach(product -> {
             totalQuantity += product.quantity();
-            String formattedLine = String.format(RECEIPT_PRODUCT_FORMAT, product.productName(), product.quantity(), product.price()).replace(" ", WIDE_SPACE);
-            int quantityStartIndex = formattedLine.indexOf(String.valueOf(product.quantity()));
-            int quantityEndIndex = quantityStartIndex + String.valueOf(product.quantity()).length();
+            System.out.println(formatProductLine(product));
+        });
+    }
 
-            formattedLine = formattedLine.substring(0, quantityEndIndex + 1) + "  " + formattedLine.substring(quantityEndIndex + 1);
-            System.out.println(formattedLine);
-        }
+    private String formatProductLine(ReceiptProduct product) {
+        String formattedLine = String.format(RECEIPT_PRODUCT_FORMAT, product.productName(), product.quantity(), product.price())
+                .replace(" ", WIDE_SPACE);
+        return addExtraSpacing(formattedLine, product.quantity());
+    }
+
+    private String addExtraSpacing(String line, int quantity) {
+        int quantityStartIndex = line.indexOf(String.valueOf(quantity));
+        int quantityEndIndex = quantityStartIndex + String.valueOf(quantity).length();
+        return line.substring(0, quantityEndIndex + 1) + "  " + line.substring(quantityEndIndex + 1);
     }
 
     private void printFreeItemDetails(List<ReceiptProduct> freeProducts) {
         System.out.println(FREE_ITEM_TITLE);
-        for (ReceiptProduct product : freeProducts) {
-            System.out.println(String.format(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity()).replace(" " , WIDE_SPACE));
-        }
+        freeProducts.forEach(product -> System.out.println(formatFreeItemLine(product)));
+    }
+
+    private String formatFreeItemLine(ReceiptProduct product) {
+        return String.format(RECEIPT_FREE_ITEM_FORMAT, product.productName(), product.quantity()).replace(" ", WIDE_SPACE);
     }
 
     private void printReceiptFooter(ReceiptPrice receiptPrice) {
         System.out.println(RECEIPT_DIVIDER);
+        System.out.println(formatTotalPurchaseLine(receiptPrice));
+        System.out.println(formatDiscountLine(PROMOTION_DISCOUNT, receiptPrice.promotionPrice()));
+        System.out.println(formatDiscountLine(MEMBERSHIP_DISCOUNT, receiptPrice.membershipPrice()));
+        System.out.println(formatFinalPaymentLine(receiptPrice.paymentPrice()));
+    }
 
-        String formattedPrice = String.format(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, receiptPrice.totalPrice()).replace(" ", WIDE_SPACE);
-        int totalQuantityStartIndex = formattedPrice.indexOf(String.valueOf(totalQuantity));
-        int totalQuantityEndIndex = totalQuantityStartIndex + String.valueOf(totalQuantity).length();
+    private String formatTotalPurchaseLine(ReceiptPrice receiptPrice) {
+        String formattedLine = String.format(RECEIPT_PRODUCT_FORMAT, TOTAL_PURCHASE, totalQuantity, receiptPrice.totalPrice())
+                .replace(" ", WIDE_SPACE);
+        return addExtraSpacing(formattedLine, totalQuantity);
+    }
 
-        formattedPrice = formattedPrice.substring(0, totalQuantityEndIndex + 1) + "  " + formattedPrice.substring(totalQuantityEndIndex + 1);
-        System.out.println(formattedPrice);
+    private String formatDiscountLine(String discountType, int discountPrice) {
+        return String.format(RECEIPT_PROMOTION_PRICE_FORMAT, discountType, formatNegativePrice(discountPrice)).replace(" ", WIDE_SPACE);
+    }
 
-        String formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, PROMOTION_DISCOUNT, negativeFormatPrice(receiptPrice.promotionPrice())).replace(" ", WIDE_SPACE);
-        System.out.println(formattedLine);
-
-        formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, MEMBERSHIP_DISCOUNT, negativeFormatPrice(receiptPrice.membershipPrice())).replace(" ", WIDE_SPACE);
-        System.out.println(formattedLine);
-
-        formattedLine = String.format(RECEIPT_PROMOTION_PRICE_FORMAT, FINAL_PAYMENT, formatPrice(receiptPrice.paymentPrice())).replace(" ", WIDE_SPACE);
-        System.out.println(formattedLine);
+    private String formatFinalPaymentLine(int paymentPrice) {
+        return String.format(RECEIPT_PAYMENT_PRICE_FORMAT, FINAL_PAYMENT, formatPrice(paymentPrice)).replace(" ", WIDE_SPACE);
     }
 
     private String formatPrice(int price) {
         return String.format(DISCOUNT_PRICE_FORMAT, Math.abs(price));
     }
 
-    private String negativeFormatPrice(int price) {
-        return String.format("-" + DISCOUNT_PRICE_FORMAT, Math.abs(price));
+    private String formatNegativePrice(int price) {
+        return "-" + formatPrice(price);
     }
 }
